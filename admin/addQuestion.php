@@ -62,13 +62,18 @@
                                 <div class="form-group" id="div_option_1">
                                     <input type="checkbox" class="form-check-input" name="writeOption[1]" value="1"/>
                                     <label for="option_1" id="label_option1">Вариант №1</label>
-                                    <input type="text" class="form-control" name="option[1]" required/>
+                                    <input type="text" class="form-control" name="option[1]"/>
                                 </div>
                                 <div class="form-group" id="div_option_2">
                                     <input type="checkbox" class="form-check-input" name="writeOption[2]" value="2"/>
                                     <label for="option_1" id="label_option1">Вариант №2</label>
-                                    <input type="text" class="form-control" name="option[2]" required/>
+                                    <input type="text" class="form-control" name="option[2]"/>
                                 </div>
+                            </div>
+
+                            <div class="form-group" id="answer" style="display: none">
+                                <label for="question">"Эталонный ответ"</label>
+                                <input type="text" class="form-control" name="answer" id="answer"/>
                             </div>
 
                             <div class="form-group">
@@ -91,40 +96,38 @@
 
         <script type="text/javascript">
 
+            var checkBoxState = false;
+
             function clickCheckBox()
             {
                 checkBoxState = !checkBoxState;
                 hideOptions();
             }
 
-
-
-
-
             function hideOptions()
             {
-                var option1 = document.getElementById('div_option1');
-                var option2 = document.getElementById('div_option2');
-                var option3 = document.getElementById('div_option3');
-                var option4 = document.getElementById('div_option4');
+                var optionDiv = document.getElementById('optionDiv');
                 var answer = document.getElementById('answer');
+                var options = document.getElementsByTagName('option');
+                var optionsArray = Array.from(options);
 
                 if(checkBoxState) {
-                    option1.style.display = 'none';
-                    option2.style.display = 'none';
-                    option3.style.display = 'none';
-                    option4.style.display = 'none';
-                    answer.placeholder = 'Введите эталонный ответ'
+                    optionDiv.style.display = 'none';
+                    answer.style.display = 'block';
+                    answer.required = true;
+                    optionsArray.forEach(function (item) {
+                        item.required = false;
+                    })
                 }
                 else {
-                    option1.style.display = 'block';
-                    option2.style.display = 'block';
-                    option3.style.display = 'block';
-                    option4.style.display = 'block';
-                    answer.placeholder = 'Введите номер правильного ответа'
+                    optionDiv.style.display = 'block';
+                    answer.style.display = 'none';
+                    answer.required = false;
+                    optionsArray.forEach(function (item) {
+                        item.required = true;
+                    })
                 }
             }
-
         </script>
 
     </div>	<!--/.main-->

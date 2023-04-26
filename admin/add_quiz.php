@@ -37,8 +37,15 @@
         }
 
         if (isset($_POST['question_type'])) {
-            //TODO: Свободные вопросы
-            $addQuestion = addFreeQuestion($test_id, $question, $answer);
+            $addQuestion = addQuestion($test_id, $question, 1, $imagePath);
+            $idLastQuestion = getLastIdQuestion();
+
+            if ($answer != null) {
+                addAnswer($idLastQuestion, $answer, 1);
+            } else {
+                $_SESSION['error'][] = "Незаполенен эталонный ответ";
+            }
+
         }
         else {
             $addQuestion = addQuestion($test_id, $question, 0, $imagePath);

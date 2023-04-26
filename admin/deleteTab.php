@@ -90,7 +90,7 @@ if(isset($_GET['action']) && $_GET['action'] == "delete")
             if ($data != '')
                 unlink($data);
 
-            $_SESSION['success'] = "Question ".$number." is deleted from Test ".$test_id;
+            $_SESSION['success'] = "Вопрос ".$number." удален из теста ";
         } else {
             $_SESSION['error'] = $conn->error;
         }

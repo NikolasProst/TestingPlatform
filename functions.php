@@ -103,7 +103,7 @@ function addQuestion($testId, $question, $type, $image) {
     if (empty($_SESSION['error'])) {
         $sql = "INSERT INTO questions (id_test, text, type, image) values ('".$testId."', '".$question."', '".$type."', '".$image."')";
         if ($conn->query($sql) === true) {
-            $_SESSION['success'] = "Question has been added to test ".$testId;
+            $_SESSION['success'] = "Вопрос добавлен в тест ".$testId;
             return $_SESSION['success'];
         } else {
             $_SESSION['error'][] = $conn->error;
@@ -148,27 +148,10 @@ function getLastIdCompetence() {
     return $result['id'];
 }
 
-function addFreeQuestion($test_id, $question, $answer) {
-    global $conn;
-    if (empty($_SESSION['error'])) {
-        $sql = "INSERT INTO questions (test_id, question, option1, answer) VALUES('".$test_id."', '".$question."', '".$answer."', 0)";
-        if ($conn->query($sql) === true) {
-            $_SESSION['success'] = "Question has been added to test ".$test_id;
-            return $_SESSION['success'];
-        } else {
-            $_SESSION['error'][] = $conn->error;
-            return $_SESSION['error'];
-        }
-    }
-    return false;
-}
-
 //check exam's result and shows it to user in their dashboard
 function answer($data) {
     global $conn;
     $test_id = $_POST['test_id'];
-    print_r($_POST);
-    header();
     $right = 0;
     $wrong = 0;
     $no_answer = 0;

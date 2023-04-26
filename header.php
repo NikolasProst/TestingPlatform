@@ -20,9 +20,5 @@ include('config.php');
                 <a href="index.php"><img class="logo" src="images/logo.jpg" alt="online exam"></a>
             </div>
         </div>
-        <?php
-//        if (isset($_SESSION['userdata']['user_email'])) {
-//        include('sidebar.php');
-//        }
-        ?>
+
 

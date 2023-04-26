@@ -66,34 +66,7 @@ a:hover {
 .exam label {
     margin-bottom:0px;
 }
-ul.header-nav {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  background-color: #333;
-}
 
-.header-nav li {
-  float:right;
-}
-
-.header-nav li a{
-  display: inline-block;
-  color: white;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-}
-
-.header-nav li a:hover {
-  background-color: #30a5ff;
-  text-decoration:none;
-  color:white;
-}
-.header-nav li span{
-    padding: 14px 16px;display: inline-block;
-}
 .score table tr.result {
   background: #38aae0;
   color: white;

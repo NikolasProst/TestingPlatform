@@ -84,7 +84,7 @@ function addOption() {
 
 //Удалить вариант ответа
 function delOption() {
-    if (optionId === 1) {
+    if (optionId === 2) {
         alert('Достигнуто минимальное кол-во вариантов ответа!');
         return false;
     } else {
