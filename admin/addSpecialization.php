@@ -1,5 +1,5 @@
 <?php
-    $title = 'Add Spec';
+    $title = 'Добавить направление';
     include('checkAdminData.php');
     include('../config.php');
     include('../functions.php');
@@ -14,7 +14,7 @@
         if ($conn->query($sql) == true)
         {
             $_SESSION['success'] = "Направление создано";
-            header('location: index.php');
+            header('location: spec_list.php');
 
         } else {
             $_SESSION['error'][] = $conn->error;
@@ -28,9 +28,9 @@
 	<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
 		<div class="row">
 			<ol class="breadcrumb">
-				<li><a href="index.php">
-					<em class="fa fa-home"></em>
-				</a></li>
+				<li><a href="index.php"><em class="fa fa-home"></em></a></li>
+                <li><a href="spec_list.php">Направления</a></li>
+                <li>Создать направление</li>
             </ol>
 		</div><!--/.row-->
 		
@@ -56,16 +56,7 @@
                                 <label for="question">Название направления</label>
                                 <input type="text" class="form-control" name="spec_name" id="spec_name" required/>
                             </div>
-                            <div class="form-group">
-
-                            <div class="form-group">
-                                <label for="inputState">Предмет</label>
-                                <select id="subjectdiv" class="form-control" name="subject" id="subject" required>
-                                    <option value="0">Выберите предмет</option>
-                                    <?php showSubject(); ?>
-                                </select>
-                            </div>
-                            </div>
+                        </div>
 
  						    <button type="submit" class="btn btn-default" name="addSpec">Добавить</button>
 					</form>

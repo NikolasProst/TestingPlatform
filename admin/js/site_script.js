@@ -31,7 +31,7 @@ function getCompetence(subject_id) {
 }
 
 function generateTest(spec_id, subject_id, competence_id) {
-    var strURL = "tests.php?spec_id=" + spec_id + ",subject_id=" + subject_id + ",competence_id=" + competence_id;
+    var strURL = "test_list.php?spec_id=" + spec_id + ",subject_id=" + subject_id + ",competence_id=" + competence_id;
     fillElement("testdiv", strURL);
 }
 

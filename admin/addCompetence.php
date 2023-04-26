@@ -1,5 +1,5 @@
 <?php
-    $title = 'Add Competence';
+    $title = 'Создаить компетенцию';
     include('checkAdminData.php');
     include('../config.php');
     include('../functions.php');
@@ -7,13 +7,12 @@
     if (isset($_POST['addComp']))
     {
         $name = $_POST['name'];
-        $subject = $_POST['subject'];
         $sql = "INSERT INTO competences (name) VALUES('".$name."')";
 
         if ($conn->query($sql) == true)
         {
             $_SESSION['success'] = "Компетенция создана";
-            header('location: index.php');
+            header('location: comp_list.php');
 
         } else {
             $_SESSION['error'][] = $conn->error;
@@ -27,9 +26,9 @@
 	<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
 		<div class="row">
 			<ol class="breadcrumb">
-				<li><a href="index.php">
-					<em class="fa fa-home"></em>
-				</a></li>
+                <li><a href="index.php"><em class="fa fa-home"></em></a></li>
+                <li><a href="subj_list.php">Компетенции</a></li>
+                <li>Создать компетенцию</li>
             </ol>
 		</div><!--/.row-->
 		
@@ -53,16 +52,9 @@
 						<div class="form-group ">
                             <div class="form-group">
                                 <label for="question">Название</label>
-                                <input type="text" class="form-control" name="test_name" id="test_name" required/>
+                                <input type="text" class="form-control" name="name" id="name" required/>
                             </div>
-
-                            <div class="form-group">
-                                <label for="inputState">Предмет</label>
-                                <select id="inputState" class="form-control" name="subject" id="subject" required>
-                                    <option value="0">Выберите предмет</option>
-                                    <?php showSubject(); ?>
-                                </select>
-                            </div>
+                        </div>
 
  						    <button type="submit" class="btn btn-default" name="addComp">Добавить</button>
 					</form>

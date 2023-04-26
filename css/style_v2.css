@@ -8,15 +8,18 @@ a:hover {
     text-decoration:none;
 }
 .header {
-    background:#eeeeee;
+    background: white;
 }
 .header img {
-    width: 100px;
     height: 115px;
+    width: 608px;
+    width: 608px;
 }
 
 .header .row{
-    padding-left: 85px;
+    width: 608px;
+    display: block;
+    margin: 0 auto;
 }
 .content {
     padding:50px 30px;

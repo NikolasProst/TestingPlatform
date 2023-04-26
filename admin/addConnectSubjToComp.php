@@ -14,7 +14,7 @@ if (isset($_POST['addSubj']))
     if ($conn->query($sql) == true)
     {
         $_SESSION['success'] = "Связь создана";
-        header('location: index.php');
+        header('location: connectSubjToComp_list.php');
     } else {
         $_SESSION['error'][] = $conn->error;
     }

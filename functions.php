@@ -261,7 +261,7 @@ function showQuestions()
             }
 
             $html .= '<div><span>Ответ:</span>'. implode(',', explode(' ', trim($trueAnswers))) .'</div> 
-                <div><a class="delete" href="deleteTest.php?action=delete&ques_id='.$rowQuestion["id"].'&number='.$i.'&test_id='.$test_id.'" data-toggle="tooltip" title="Delete Question">Удалить вопрос <i class="fa fa-trash"></i></a></div> 
+                <div><a class="delete" href="deleteTab.php?action=delete&ques_id='.$rowQuestion["id"].'&number='.$i.'&test_id='.$test_id.'" data-toggle="tooltip" title="Delete Question">Удалить вопрос <i class="fa fa-trash"></i></a></div> 
                 </div> ';
             echo $html;
             $i++;

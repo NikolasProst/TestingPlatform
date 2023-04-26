@@ -14,8 +14,8 @@
 
         if ($conn->query($sql) == true)
         {
-            $_SESSION['success'] = "Online test is added successfully";
-            header('location: tests.php');
+            $_SESSION['success'] = "Тест успешно создан";
+            header('location: test_list.php');
         } else {
             $_SESSION['error'][] = $conn->error;
         }
@@ -31,7 +31,7 @@
 				<li><a href="index.php">
 					<em class="fa fa-home"></em>
 				</a></li>
-                <li><a href="tests.php">Тесты</a></li>
+                <li><a href="test_list.php">Тесты</a></li>
                 <li>Создать тест</li>
 			</ol>
 		</div><!--/.row-->
@@ -52,13 +52,12 @@
 					<?php endif; ?> 
 					<form action="" method="post"> 
 						<!-- This is the target div. id must match the href of this div's tab -->
-						<div class="form-group ">
                             <div class="form-group">
                                 <label for="question">Название</label>
                                 <input type="text" class="form-control" name="test_name" id="test_name" required/>
                             </div>
 
-                            <div class="form-group col-md-4">
+                            <div class="form-group">
                                 <label for="inputState">Направление</label>
                                 <select id="inputState" class="form-control" name="specialization" id="specialization" onclick="getSubject(this.value)" required>
                                     <option value="0">Выберите направление</option>
@@ -66,20 +65,20 @@
                                 </select>
                             </div>
 
-                            <div class="form-group col-md-4">
+                            <div class="form-group">
                                 <label for="inputState">Предмет</label>
-                                <select id="subjectdiv" class="form-control" name="subject" id="subject" onchange="getCompetence(this.value)" required>
+                                <select id="subjectdiv" class="form-control" name="subject" id="subject" onclick="getCompetence(this.value)" required>
                                     <option value="0">Выберите предмет</option>
                                 </select>
                             </div>
 
-                            <div class="form-group col-md-4">
+                            <div class="form-group">
                                 <label for="inputState">Компетенция</label>
                                 <select id="competencediv" class="form-control" name="competence" id="competence" required>
                                     <option value="0">Выберите компетенцию</option>
                                 </select>
                             </div>
-    					</div>
+
 
  						<button type="submit" class="btn btn-default" name="addtest">Добавить</button>
 					</form>

@@ -14,7 +14,7 @@ $test_id = $_GET['test_id'];
 				<li><a href="index.php">
 					<em class="fa fa-home"></em>
 				</a></li>
-                <li><a href="tests.php">Тесты</a></li>
+                <li><a href="test_list.php">Тесты</a></li>
 				<li class="active">Просмотр теста</li>
 			</ol>
 

@@ -2,67 +2,49 @@
     $url = $_SERVER['REQUEST_URI'];
     $path = parse_url($url, PHP_URL_PATH);
     $filename = basename($path);
-    $test_menu = array('tests.php', 'addTest.php', 'viewTest.php', 'addQuestion.php');
+    $test_menu = array('test_list.php', 'addTest.php', 'viewTest.php', 'addQuestion.php');
     $user_menu = array('testResult.php', 'users.php');
 ?>
 
 <div id="sidebar-collapse" class="col-sm-3 col-lg-2 sidebar">
 	<ul class="nav menu">
-		<li <?php if($filename == 'index.php'): ?>class="current"<?php endif; ?>><a href="index.php"><em class="fa fa-dashboard">&nbsp;</em> Главная</a></li>
+		<li><a href="index.php"><em class="fa fa-dashboard">&nbsp;</em> Главная</a></li>
 		<li class="parent <?php if(in_array($filename,$test_menu)): ?>current<?php endif; ?>">
 			<a data-toggle="collapse" href="#sub-item-1">
-				<em class="fa fa-navicon">&nbsp;</em> Тесты<span data-toggle="collapse" href="#sub-item-1" class="icon pull-right"><em class="fa fa-plus"></em></span>
+				<em class="fa fa-check-square-o">&nbsp;</em> Тесты<span data-toggle="collapse" href="#sub-item-1" class="icon pull-right"><em class="fa fa-plus"></em></span>
 			</a>
 			<ul class="children collapse" id="sub-item-1">
-				<li <?php if($filename == 'tests.php'): ?>class="current"<?php endif; ?> >
-					<a href="tests.php">
+				<li>
+					<a href="test_list.php">
 						<span class="fa fa-arrow-right">&nbsp;</span> Просмотр тестов
 					</a>
 				</li>
-				<li <?php if($filename == 'addTest.php'): ?>class="current"<?php endif; ?> >
+                <li>
 					<a href="addTest.php">
 						<span class="fa fa-arrow-right">&nbsp;</span> Добавить тест
 					</a>
 				</li>
-				<li <?php if($filename == 'addCompetence.php'): ?>class="current"<?php endif; ?> >
-					<a href="addCompetence.php">
-						<span class="fa fa-arrow-right">&nbsp;</span> Добавить компетенцию
-					</a>
-				</li>
-				<li <?php if($filename == 'addSubject.php'): ?>class="current"<?php endif; ?> >
-					<a href="addSubject.php">
-						<span class="fa fa-arrow-right">&nbsp;</span> Добавить предмет
-					</a>
-				</li>
-				<li <?php if($filename == 'addSpecialization.php'): ?>class="current"<?php endif; ?> >
-					<a href="addSpecialization.php">
-						<span class="fa fa-arrow-right">&nbsp;</span> Добавить направление
-					</a>
-				</li>
-				<li <?php if($filename == 'addConnectSpecToSubj.php'): ?>class="current"<?php endif; ?> >
-					<a href="addConnectSpecToSubj.php">
-						<span class="fa fa-arrow-right">&nbsp;</span> Привязка направления
-					</a>
-				</li>
-				<li <?php if($filename == 'addConnectSubjToComp.php'): ?>class="current"<?php endif; ?> >
-					<a href="addConnectSubjToComp.php">
-						<span class="fa fa-arrow-right">&nbsp;</span> Привязка предмета
-					</a>
-				</li>
 			</ul>
-		<li class="parent <?php if(in_array($filename,$user_menu)): ?>current<?php endif; ?>">
-			<a data-toggle="collapse" href="#sub-item-2">
-				<em class="fa fa-users">&nbsp;</em> Статистика<span data-toggle="collapse" href="#sub-item-1" class="icon pull-right"><em class="fa fa-plus"></em></span>
+
+        <li><a href="spec_list.php"><span class="fa fa-list-alt">&nbsp;</span> Список направлений</a></li>
+
+        <li><a href="subj_list.php"><span class="fa fa-book">&nbsp;</span> Список предметов</a></li>
+
+        <li><a href="comp_list.php"><span class="fa fa-briefcase">&nbsp;</span> Список компетенций</a></li>
+
+        <li class="parent <?php if(in_array($filename,$test_menu)): ?>current<?php endif; ?>">
+			<a data-toggle="collapse" href="#sub-item-5">
+				<em class="fa fa-arrows-h">&nbsp;</em> Настройка связей<span data-toggle="collapse" href="#sub-item-5" class="icon pull-right"><em class="fa fa-plus"></em></span>
 			</a>
-			<ul class="children collapse" id="sub-item-2">
-				<li <?php if($filename == 'users.php'): ?>class="current"<?php endif; ?> >
-					<a href="users.php">
-						<span class="fa fa-arrow-right">&nbsp;</span> Статистика по тестам
+			<ul class="children collapse" id="sub-item-5">
+                <li>
+					<a href="connectSpecToSubj_list.php">
+						<span class="fa fa-arrow-right">&nbsp;</span> Связи направлений
 					</a>
 				</li>
-				<li <?php if($filename == 'users.php'): ?>class="current"<?php endif; ?> >
-					<a href="users.php">
-						<span class="fa fa-arrow-right">&nbsp;</span> Show Users
+                <li>
+					<a href="connectSubjToComp_list.php">
+						<span class="fa fa-arrow-right">&nbsp;</span> Связи предметов
 					</a>
 				</li>
 			</ul>
