@@ -1,0 +1,131 @@
+* {
+    box-sizing: border-box;
+}
+body {
+    margin:0;
+}
+a:hover {
+    text-decoration:none;
+}
+.header {
+    background:#eeeeee;
+}
+.header img {
+    width: 100px;
+    height: 115px;
+}
+
+.header .row{
+    padding-left: 85px;
+}
+.content {
+    padding:50px 30px;
+}
+.content .col-lg-8{
+    text-align: center;
+}
+.content .card-header {
+    background-color:#38aae0ba;
+    color:white;
+    font-size:18px;
+    font-weight:600;
+}
+.content .btn-info {
+    background-color:#38aae0d6;
+    border-color:#38aae0ba;
+}
+.center {
+    text-align:center;
+}
+.radio input[type=radio], .radio-inline input[type=radio] {
+  margin-right: 10px;
+}
+.radio {
+  background-color: #f1f1f1;
+  padding: 10px 10px 10px 10px;
+  margin-bottom: 1px;
+  cursor: pointer;
+}
+.content table td {
+  padding:15px;
+}
+.content table td a {
+    font-weight: 700;
+    border-radius: 50px;
+    background: #30a5ff;
+    color: white;
+    padding: 8px 12px;
+    text-decoration:none;
+}
+.exam p, .exam input[type=submit] {
+    margin-top:30px;
+}
+.exam label {
+    margin-bottom:0px;
+}
+ul.header-nav {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+}
+
+.header-nav li {
+  float:right;
+}
+
+.header-nav li a{
+  display: inline-block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+.header-nav li a:hover {
+  background-color: #30a5ff;
+  text-decoration:none;
+  color:white;
+}
+.header-nav li span{
+    padding: 14px 16px;display: inline-block;
+}
+.score table tr.result {
+  background: #38aae0;
+  color: white;
+  font-weight: 600;
+}
+.score .btn{
+  font-weight: 600;
+  font-size: 16px;
+  padding: 8px 12px;
+  margin: 25px 5px 20px;
+}
+/* Mark input boxes that gets an error on validation: */
+#examForm input.invalid {
+  background-color: #ffdddd;
+}
+/* Hide all steps by default: */
+#examForm .tab {
+  display: none;
+}
+#examForm button {
+  background-color: #38aae0;
+  color: #ffffff;
+  border: none;
+  padding: 5px 15px;
+  margin-top:30px;
+}
+#examForm button:hover {
+  opacity: 0.8;
+}
+#examForm #prevBtn {
+  background-color: #bbbbbb;
+  margin-right: 10px;
+}
+
+#examForm .img-thumbnail {
+    max-width: 50%;
+    height: auto;
+}
