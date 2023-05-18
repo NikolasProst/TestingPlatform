@@ -70,15 +70,15 @@ function addOption() {
         var optionDiv = document.getElementById('optionDiv');
         if (optionDiv != null) {
             optionId++;
-            var newOption = '<div class="form-group" id="div_option_' + optionId + '">  ' +
-                '<input type="checkbox" class="form-check-input" name="writeOption[' + optionId + ']" value="' + optionId +'"/>' +
+            var newOption = document.createElement('div');
+            newOption.className = 'form-group';
+            newOption.id = 'div_option_' + optionId;
+            newOption.innerHTML = '<input type="checkbox" class="form-check-input" name="writeOption[]" value="' + optionId + '"/>' +
                 '<label for="option_' + optionId + '">Вариант №' + optionId + '</label>' +
-                ' <input type="text" class="form-control" name="option[' + optionId + '] required"/> ' +
-                '</div>';
+                ' <input type="text" class="form-control" name="option[]" required"/>';
 
-            optionDiv.innerHTML += newOption;
+            optionDiv.appendChild(newOption);
         }
-
     }
 }
 

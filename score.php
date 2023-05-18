@@ -57,11 +57,10 @@ $answer = answer($_POST);
 						echo '<h4 class="center">😓 Вы должны набрать больше 50% правильных ответов, чтобы пройти тест.</h4>';
 					}
 					else {
-						echo '<h4 class="center">🙂🥳 Вы прошли тест, Ваш результат '.$percentage.'%.</h4>';
+						echo '<h4 class="center">🙂🥳 Вы прошли тест, Ваш результат '.round($percentage).'%.</h4>';
 					}
                 	?>
                 	<div class="center">
-                		<!--<a href="result.php" class="btn btn-success btn-lg">Check Your Answers</a>-->
                 		<a href="index.php" class="btn btn-primary btn-lg">Назад к выбору теста</a>
                 	</div>
                 </div>

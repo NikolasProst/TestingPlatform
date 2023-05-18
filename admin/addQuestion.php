@@ -40,9 +40,9 @@
 							    unset($_SESSION['success']); ?>
                             </div> 
 						</span>
-					<?php endif; ?> 
-					<form id="addForm" action="add_quiz.php" method="post" enctype="multipart/form-data">
-						<!-- This is the target div. id must match the href of this div's tab -->
+					<?php endif; ?>
+                    <form id="addForm" action="add_quiz.php" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
+                        <!-- This is the target div. id must match the href of this div's tab -->
                         <div class="form-group col-md-12">
                             <div class="row">
                                 <div class="form-group col-md-9">
@@ -60,20 +60,20 @@
 
                             <div id="optionDiv">
                                 <div class="form-group" id="div_option_1">
-                                    <input type="checkbox" class="form-check-input" name="writeOption[1]" value="1"/>
+                                    <input type="checkbox" class="form-check-input" name="writeOption[]" value="1"/>
                                     <label for="option_1" id="label_option1">Вариант №1</label>
-                                    <input type="text" class="form-control" name="option[1]"/>
+                                    <input type="text" class="form-control" name="option[]"/>
                                 </div>
                                 <div class="form-group" id="div_option_2">
-                                    <input type="checkbox" class="form-check-input" name="writeOption[2]" value="2"/>
+                                    <input type="checkbox" class="form-check-input" name="writeOption[]" value="2"/>
                                     <label for="option_1" id="label_option1">Вариант №2</label>
-                                    <input type="text" class="form-control" name="option[2]"/>
+                                    <input type="text" class="form-control" name="option[]"/>
                                 </div>
                             </div>
 
                             <div class="form-group" id="answer" style="display: none">
                                 <label for="question">"Эталонный ответ"</label>
-                                <input type="text" class="form-control" name="answer" id="answer"/>
+                                <input type="text" class="form-control" name="answer"/>
                             </div>
 
                             <div class="form-group">
@@ -89,8 +89,8 @@
 
                         <button type="button" class="btn btn-default" name="addOptionButton" onclick="addOption()">Добавить вариант ответа</button>
                         <button type="button" class="btn btn-default" name="delOptionButton" onclick="delOption()">Удалить вариант ответа</button>
- 						<button type="submit" class="btn btn-default" name="quiz">Сохранить</button>
-					</form>
+                        <button type="submit" class="btn btn-default" name="quiz">Сохранить</button>
+                    </form>
 				</div> <!-- End .content-box-content -->
 			</div> <!-- End .content-box -->
 
@@ -109,24 +109,49 @@
                 var optionDiv = document.getElementById('optionDiv');
                 var answer = document.getElementById('answer');
                 var options = document.getElementsByTagName('option');
-                var optionsArray = Array.from(options);
 
                 if(checkBoxState) {
                     optionDiv.style.display = 'none';
                     answer.style.display = 'block';
-                    answer.required = true;
-                    optionsArray.forEach(function (item) {
-                        item.required = false;
-                    })
                 }
                 else {
                     optionDiv.style.display = 'block';
                     answer.style.display = 'none';
-                    answer.required = false;
-                    optionsArray.forEach(function (item) {
-                        item.required = true;
-                    })
                 }
+            }
+
+            function validateForm() {
+                var freeAnswer = document.getElementsByName("question_type");
+
+                if(freeAnswer.checked === false) {
+                    var options = document.getElementsByName("writeOption[]");
+                    var checked = false;
+
+                    for (var i = 0; i < options.length; i++) {
+                        if (options[i].checked === true) {
+                            checked = true;
+                            break;
+                        }
+                    }
+                    if (!checked) {
+                        alert("Выберите хотя бы один вариант ответа");
+                        return false;
+                    }
+
+                    var optionTexts = document.getElementsByName("option[]");
+                    for (var i = 0; i < optionTexts.length; i++) {
+                        if (optionTexts[i].value.trim() === "") {
+                            alert("Заполните все варианты ответа");
+                            return false;
+                        }
+                    }
+                }
+                var answerTexts = document.getElementsByName("answer");
+                if (answerTexts.value.trim() === "") {
+                    alert("Заполните эталонный ответ");
+                    return false;
+                }
+                return true;
             }
         </script>
 

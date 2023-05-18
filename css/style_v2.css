@@ -12,8 +12,7 @@ a:hover {
 }
 .header img {
     height: 115px;
-    width: 608px;
-    width: 608px;
+    max-width: 100%;
 }
 
 .header .row{

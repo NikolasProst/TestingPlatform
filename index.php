@@ -72,8 +72,6 @@ include('header.php');
                                             <button type="submit" class="btn btn-primary" name="startTest">Перейти к тесту</button>
                                         </div>
                                     </div>
-
-
                                 </form>
                         </div> <!-- End .content-box-content -->
                     </div>

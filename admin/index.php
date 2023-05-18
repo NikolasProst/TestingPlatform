@@ -78,21 +78,6 @@ include('header.php');
     				</div>
 				</div> <!-- End .content-box-content -->
 			</div> <!-- End .content-box -->
-		<div class="content-box"><!-- Start Content Box -->
-				<div class="content-box-content">
-					<div class="table-responsive">
-        				<div class="table-wrapper">
-            				<div class="table-title">
-                				<h2>Статистика</h2>
-            				</div>
-            				<table class="table table-bordered">
-
-                            </table>
-				        </div>
-    				</div>
-				</div> <!-- End .content-box-content -->
-			</div> <!-- End .content-box -->
-
 	</div>	<!--/.main-->
 	
 	<?php include('footer.php'); ?>

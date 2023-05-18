@@ -42,8 +42,9 @@
 
             if ($answer != null) {
                 addAnswer($idLastQuestion, $answer, 1);
+                header('location: viewTest.php?test_id=' . $test_id);
             } else {
-                $_SESSION['error'][] = "Незаполенен эталонный ответ";
+                $_SESSION['error'][] = "Не заполнен эталонный ответ";
             }
 
         }
