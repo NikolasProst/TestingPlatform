@@ -115,7 +115,7 @@
 
                         <tbody>
                         <?php
-                        $sql = "SELECT t.id, t.test_title, t.date, t.date_update, t.last_update_user, s.name subjectName, sp.name specializationName, c.name competenceName, COUNT(q.id) questionCount
+                        $sql = "SELECT t.id, t.test_title, t.date, s.name subjectName, sp.name specializationName, c.name competenceName, COUNT(q.id) questionCount
                                     FROM tests t 
                                     LEFT JOIN subjects s ON t.id_subject = s.id 
                                     LEFT JOIN specializations sp ON t.id_specialization = sp.id 
