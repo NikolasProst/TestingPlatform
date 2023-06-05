@@ -12,15 +12,14 @@ $answer = answer($_POST);
             <div class="row">
                 <div class="col-lg-12 col-md-12 col-sm-12">
                 	<?php
-                	$total_question = $answer['right']+$answer['wrong']+$answer['no_answer'];
+                    $total_question_sql = "SELECT COUNT(*) AS total FROM questions WHERE id_test='".$answer['test_id']."'";
+                    $total_question_result = $conn->query($total_question_sql);
+                    $total_question_row = $total_question_result->fetch_assoc();
+                    $total_question = $total_question_row['total'];
                 	$attempt_question = $answer['right']+$answer['wrong'];
                 	?>
                 	<h1>
-                		<?php
-                        $sql = "SELECT * FROM tests WHERE id='".$answer['test_id']."'";
-                        $result = $conn->query($sql);
-                        $row = $result->fetch_assoc();
-                        echo $row['test_title'];?> (Тест <?php echo $answer['test_id']; ?>) Результат:
+                		<?php echo $row['test_title'];?> (Тест <?php echo $answer['test_id']; ?>) Результат:
                 	</h1><br/>
                 	<table class="table table-bordered">
 					    <thead>

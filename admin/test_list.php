@@ -1,10 +1,10 @@
-<?php 
+<?php
     $title = 'Tests';
     include('../config.php');
     include('../functions.php');
     include('checkAdminData.php');
     include('header.php');
-?>  
+?>
 <?php include('sidebar.php'); ?>
 <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
@@ -47,58 +47,128 @@
                             </span>
                         <?php endif; ?>
                     </div>
+                    <form method="POST" class="form-inline" style="margin-bottom: 20px;">
+
+                        <div class="form-group">
+                            <label for="specialization">Направление:</label>
+                            <select name="specialization" id="specialization" class="form-control">
+                                <option value="">Все</option>
+                                <?php
+                                $sql = "SELECT DISTINCT sp.name FROM tests t LEFT JOIN specializations sp ON t.id_specialization = sp.id";
+                                $result = $conn->query($sql);
+                                while($row = $result->fetch_assoc()) {
+                                    if ($row['name'] != null)
+                                        echo "<option value='" . $row['name'] . "'>" . $row['name'] . "</option>";
+                                }
+                                ?>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="subject">Предмет:</label>
+                            <select name="subject" id="subject" class="form-control">
+                                <option value="">Все</option>
+                                <?php
+                                $sql = "SELECT DISTINCT s.name FROM tests t LEFT JOIN subjects s ON t.id_competence = s.id";
+                                $result = $conn->query($sql);
+                                while($row = $result->fetch_assoc()) {
+                                    if ($row['name'] != null)
+                                        echo "<option value='" . $row['name'] . "'>" . $row['name'] . "</option>";
+                                }
+                                ?>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="competence">Компетенция:</label>
+                            <select name="competence" id="competence" class="form-control">
+                                <option value="">Все</option>
+                                <?php
+                                $sql = "SELECT DISTINCT c.name FROM tests t LEFT JOIN competences c ON t.id_competence = c.id";
+                                $result = $conn->query($sql);
+                                while($row = $result->fetch_assoc()) {
+                                    if ($row['name'] != null)
+                                        echo "<option value='" . $row['name'] . "'>" . $row['name'] . "</option>";
+                                }
+                                ?>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Фильтр</button>
+                        <a href="test_list.php" class="btn btn-secondary">Сбросить</a>
+
+                    </form>
+
                     <table class="table table-bordered">
                         <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Название</th>
-                                <th>Направление</th>
-                                <th>Предмет</th>
-                                <th>Компетенция</th>
-                                <th>Количество вопросов</th>
-                                <th style="min-width:140px;">Действия</th>
-                            </tr>
+                        <tr>
+                            <th>ID</th>
+                            <th>Название</th>
+                            <th>Направление</th>
+                            <th>Предмет</th>
+                            <th>Компетенция</th>
+                            <th>Количество вопросов</th>
+                            <th>Дата создания</th>
+                            <th style="min-width:140px;">Действия</th>
+                        </tr>
                         </thead>
 
                         <tbody>
-                            <?php
-                                $sql = "select t.id, t.test_title, s.name subjectName, sp.name specializationName, c.name competenceName from tests t
-                                    left join subjects s on id_competence = s.id
-                                    left join specializations sp on id_specialization = sp.id
-                                    left join  competences c on id_competence = c.id";
-                                $result = $conn->query($sql);
-                                $id_test = 1;
+                        <?php
+                        $sql = "SELECT t.id, t.test_title, t.date, t.date_update, t.last_update_user, s.name subjectName, sp.name specializationName, c.name competenceName, COUNT(q.id) questionCount
+                                    FROM tests t 
+                                    LEFT JOIN subjects s ON t.id_subject = s.id 
+                                    LEFT JOIN specializations sp ON t.id_specialization = sp.id 
+                                    LEFT JOIN competences c ON t.id_competence = c.id 
+                                    LEFT JOIN questions q ON q.id_test = t.id ";
 
-                                if ($result->num_rows > 0)
-                                {
-                                    // output data of each row
-                                    while ($row = $result->fetch_assoc()) {?>
-                                        <tr>
-                                        <td><?php echo $id_test;?></td>
-                                        <td><?php echo $row['test_title'];?></td>
-                                        <td><?php echo $row['specializationName'];?></td>
-                                        <td><?php echo $row['subjectName'];?></td>
-                                        <td><?php echo $row['competenceName'];?></td>
-                                        <td>
-                                            <?php
-                                                $sql1 = "SELECT q.id FROM questions q RIGHT JOIN tests t ON q.id_test = t.id WHERE q.id_test ='".$row['id']."'";
-                                                $result1 = $conn->query($sql1);
-                                                $test_id = $row['id'];
-                                                $count = $result1->num_rows;
-                                                echo $count;
-                                                $id_test++;
-                                            ?>
-                                        </td>
-                                            <td style="min-width:140px;">
-                                                <a class="edit" href="viewTest.php?test_id=<?php echo $test_id;  ?>" data-toggle="tooltip" title="Просмотр теста"><i class="fa fa-eye"></i></a>
-                                                <a class="addd" href="addQuestion.php?test_id=<?php echo $test_id; ?>" data-toggle="tooltip" title="Добавить вопрос"><i class="fa fa-plus"></i></a>
-                                                <a class="delete" href="deleteTab.php?action=removeTest&test_id=<?php echo $test_id; ?>" data-toggle="tooltip" title="Удалить тест"><i class="fa fa-trash"></i></a>
-                                            </td>
-                                        </tr><?php
-                                    }
-                                }
-                            ?>
-                        </tbody>
+                        if(isset($_POST['subject']) && !empty($_POST['subject'])) {
+                            $subject = $_POST['subject'];
+                            $sql .= "WHERE s.name = '$subject' ";
+                        }
+                        if(isset($_POST['specialization']) && !empty($_POST['specialization'])) {
+                            $specialization = $_POST['specialization'];
+                            if(strpos($sql, 'WHERE')) {
+                                $sql .= "AND sp.name = '$specialization' ";
+                            } else {
+                                $sql .= "WHERE sp.name = '$specialization' ";
+                            }
+                        }
+                        if(isset($_POST['competence']) && !empty($_POST['competence'])) {
+                            $competence = $_POST['competence'];
+                            if(strpos($sql, 'WHERE')) {
+                                $sql .= "AND c.name = '$competence' ";
+                            } else {
+                                $sql .= "WHERE c.name = '$competence' ";
+                            }
+                        }
+
+                        $sql .= "GROUP BY t.id";
+
+                        $result = $conn->query($sql);
+                        $id_test = 1;
+
+                        if ($result->num_rows > 0) {
+                            while ($row = $result->fetch_assoc()) {?>
+                                <tr>
+                                <td><?php echo $id_test;?></td>
+                                <td><?php echo $row['test_title'];?></td>
+                                <td><?php echo $row['specializationName'];?></td>
+                                <td><?php echo $row['subjectName'];?></td>
+                                <td><?php echo $row['competenceName'];?></td>
+                                <td><?php echo $row['questionCount'];?></td>
+                                <td><?php echo $row['date'];?></td>
+                                <td style="min-width:140px;">
+                                    <a class="edit" href="viewTest.php?test_id=<?php echo $row['id'];  ?>" data-toggle="tooltip" title="Просмотр теста"><i class="fa fa-eye"></i></a>
+                                    <a class="add" href="addQuestion.php?test_id=<?php echo $row['id']; ?>" data-toggle="tooltip" title="Добавить вопрос"><i class="fa fa-plus"></i></a>
+                                    <a class="delete" href="deleteTab.php?action=removeTest&test_id=<?php echo $row['id']; ?>" data-toggle="tooltip" title="Удалить тест"><i class="fa fa-trash"></i></a>
+                                </td>
+                                </tr><?php
+                                $id_test++;
+                            }
+                        }
+                        ?>
+                        </tbody
                     </table>
                 </div>
             </div>

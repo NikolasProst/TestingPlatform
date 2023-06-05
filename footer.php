@@ -1,4 +1,4 @@
 
-        <script src="admin/js/site_script.js"></script>
+        <script src="admin/js/site_script_1.0.js"></script>
     </body>
 </html>

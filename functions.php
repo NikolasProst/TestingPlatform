@@ -98,26 +98,27 @@ function registerUser($name, $email, $password, $gender, $mobile_no, $address, $
 }
 
 // add questions to quiz
-function addQuestion($testId, $question, $type, $image) {
+function addQuestion($testId, $question, $options, $writeOptions, $answer_for_free, $type, $image) {
     global $conn;
     if (empty($_SESSION['error'])) {
-        $sql = "INSERT INTO questions (id_test, text, type, image) values ('".$testId."', '".$question."', '".$type."', '".$image."')";
+        if ($writeOptions != null) {
+            $strWriteOptions = implode(',', $writeOptions);
+        }
+
+        $sql = "";
+        if ($type == 1)
+        {
+            $sql = "INSERT INTO questions (id_test, text, answer_for_free, type, image)
+                            values ('" . $testId . "', '" . $question . "', '" . $answer_for_free . "', '" . $type . "', '" . $image . "')";
+        }
+        else
+        {
+            $sql = "INSERT INTO questions (id_test, text, option_1, option_2, option_3, option_4, write_options, type, image)
+                            values ('" . $testId . "', '" . $question . "', '" . $options[0] . "', '" . $options[1] . "', '" . $options[2] . "', '" . $options[3] . "', '" . $strWriteOptions . "', '" . $type . "', '" . $image . "')";
+        }
+
         if ($conn->query($sql) === true) {
             $_SESSION['success'] = "Вопрос добавлен в тест ".$testId;
-            return $_SESSION['success'];
-        } else {
-            $_SESSION['error'][] = $conn->error;
-            return $_SESSION['error'];
-        }
-    }
-    return false;
-}
-
-function addAnswer($idQuestion, $text, $isTrue) {
-    global $conn;
-    if (empty($_SESSION['error'])) {
-        $sql = "INSERT INTO answers (id_question, text, is_true) values ('".$idQuestion."', '".$text."', '".$isTrue."')";
-        if ($conn->query($sql) === true) {
             return $_SESSION['success'];
         } else {
             $_SESSION['error'][] = $conn->error;
@@ -148,50 +149,79 @@ function getLastIdCompetence() {
     return $result['id'];
 }
 
-//check exam's result and shows it to user in their dashboard
 function answer($data)
 {
     global $conn;
-    $test_id = $_POST['test_id'];
-    $userAnswer = $_POST['freeAnswer'];
+    $test_id = $data['test_id'];
+    $freeAnswer = $data['freeAnswer'];
     $right = 0;
     $wrong = 0;
     $no_answer = 0;
-
     $sql = "SELECT * FROM questions WHERE id_test='" . $test_id . "'";
     $result = $conn->query($sql);
     while ($question = $result->fetch_assoc()) {
-        $sql = "SELECT * FROM answers WHERE id_question = '" . $question['id'] . "'";
-        $answers = $conn->query($sql);
+        $selectAnswerIds = array();
 
-        $selectAnswerIds = $_POST['writeOptionForQuest'][$question['id']];
+        if (isset($freeAnswer[$question['id']])) {
+            $userAnswer = $freeAnswer[$question['id']];
+        }
 
-        if (empty($selectAnswerIds) && $question['type'] != 1) {
+        if (isset($data['writeOptionForQuest'][$question['id']])) {
+            $selectAnswerIds = $data['writeOptionForQuest'][$question['id']];
+        }
+
+        $correctAnswers = explode(',', $question['write_options']);
+
+        $has_answered = false;
+        if (!empty($selectAnswerIds) || (!empty($userAnswer) && $question['type'] == 1)) {
+            $has_answered = true;
+        }
+
+        if (!$has_answered) {
             $no_answer++;
         } else {
             $is_right = true;
-            while ($answer = $answers->fetch_assoc()) {
 
-                if ($question['type'] == 1) {
-                    if ($answer['text'] == $userAnswer) {
-                        $is_right = true;
-                        break;
+            if ($question['type'] == 1) {
+                if ($question['answer_for_free'] == $userAnswer) {
+                    $right++;
+                } else {
+                    //TODO: Доработать, когда появится нейросеть
+                    //$wrong++;
+                }
+            } else {
+                $options = array();
+                $options = [0];
+                for ($i = 1; $i <= 4; $i++) {
+                    if (!empty($question['option_' . $i])) {
+                        $options[] = $question['option_' . $i];
                     }
                 }
 
-                if ($answer['is_true'] == '1' && !in_array($answer['id'], $selectAnswerIds)) {
-                    $is_right = false;
-                    break;
+                foreach ($options as $index => $option) {
+
+                    if ($index != 0) {
+                        $is_true = false;
+                        if (in_array($index, $correctAnswers)) {
+                            $is_true = true;
+                        }
+
+                        if ($is_true && !in_array($option, $selectAnswerIds)) {
+                            $is_right = false;
+                            break;
+                        }
+                        if (!$is_true && in_array($option, $selectAnswerIds)) {
+                            $is_right = false;
+                            break;
+                        }
+                    }
                 }
-                if ($answer['is_true'] == '0' && in_array($answer['id'], $selectAnswerIds)) {
-                    $is_right = false;
-                    break;
+
+                if ($is_right) {
+                    $right++;
+                } else {
+                    $wrong++;
                 }
-            }
-            if ($is_right) {
-                $right++;
-            } else {
-                $wrong++;
             }
         }
     }
@@ -217,7 +247,7 @@ function showQuestions()
         $data = $row['test_title'];
     }
 
-    $sql = "SELECT id, text, image FROM questions WHERE id_test='".$test_id."'";
+    $sql = "SELECT id, text, option_1, option_2, option_3, option_4, write_options, image, type, answer_for_free FROM questions WHERE id_test='".$test_id."'";
 
     $result = $conn->query($sql);
     $count = $result->num_rows;
@@ -227,33 +257,30 @@ function showQuestions()
         $i = 1;
         while ($rowQuestion = $result->fetch_assoc())
         {
-            $sql1 = "SELECT id_question, text, is_true FROM answers where id_question = '".$rowQuestion['id']."'";
-            $answers = $conn->query($sql1);
-
-            $j = 1;
             $html = '<div class="question"> <div><span>Вопрос ' . $i . ':</span>' . $rowQuestion['text'] . '</div>';
 
-            if ($rowQuestion['image'] != '')
+            if ($rowQuestion['image'] != null)
             {
                 $html .= '<img src="'. $rowQuestion['image'] .'" class="img-thumbnail">';
             }
 
-            $trueAnswers = "";
-            while ($rowAnswer = $answers->fetch_assoc()) {
-                if ($answers->num_rows === 1) {
-                    $html .= '<div><span>Эталонный ответ: </span>' . $rowAnswer['text'] . '</div>';
-                    break;
+            if ($rowQuestion['type'] == 1)
+            {
+                $html .= '<div><span>Эталонный ответ: </span>' . $rowQuestion['answer_for_free'] . '</div>';
+            }
+            else {
+                for ($j = 1; $j <= 4; $j++) {
+                    $option_key = 'option_' . $j;
+                    if (!empty($rowQuestion[$option_key])) {
+                        $html .= '<div><span>Вариант №' . $j . ':</span>' . $rowQuestion[$option_key] . '</div>';
+                    }
                 }
-
-                $html .= '<div><span>Вариант №' . $j . ':</span>' . $rowAnswer['text'] . '</div>';
-                if ($rowAnswer['is_true'] == 1)
-                    $trueAnswers .= $j . ' ';
-
-                $j++;
             }
-            if ($answers->num_rows !== 1) {
-                $html .= '<div><span>Ответ:</span>' . implode(',', explode(' ', trim($trueAnswers))) . '</div>';
+
+            if ($rowQuestion['write_options'] != null) {
+                $html .= '<div><span>Ответ:</span>' . $rowQuestion['write_options'] . '</div>';
             }
+
             $html .= '<div><a class="delete" href="deleteTab.php?action=delete&ques_id=' . $rowQuestion["id"] . '&number=' . $i . '&test_id=' . $test_id . '" data-toggle="tooltip" title="Delete Question">Удалить вопрос <i class="fa fa-trash"></i></a></div> 
                 </div> ';
             echo $html;
@@ -323,29 +350,43 @@ function enableSingleQuestion()
                 $html .= '<img src="admin/' . $question['image'] . '" class="img-thumbnail">';
             }
 
-            $sql = "SELECT * FROM answers WHERE id_question = '" . $question['id'] . "' ORDER BY RAND()";
-            $answers = $conn->query($sql);
-
-            $numOfAnswer = $answers->num_rows;
-            $numOfCorrectAnswer = 0;
-            while ($answer = $answers->fetch_assoc()) {
-                if ($answer['is_true'] == 1) {
-                    $numOfCorrectAnswer++;
+            $answers = array();
+            if ($question['type'] == 1) {
+                $answers[] = $question['answer_for_free'];
+            } else {
+                if (!empty($question['option_1'])) {
+                    $answers[] = $question['option_1'];
+                }
+                if (!empty($question['option_2'])) {
+                    $answers[] = $question['option_2'];
+                }
+                if (!empty($question['option_3'])) {
+                    $answers[] = $question['option_3'];
+                }
+                if (!empty($question['option_4'])) {
+                    $answers[] = $question['option_4'];
                 }
             }
 
+            $numOfAnswer = count($answers);
+            $correctAnswers = explode(',', $question['write_options']);
+            $numOfCorrectAnswer = sizeof($correctAnswers);
 
-            $answers->data_seek(0);
             if ($numOfAnswer > 0) {
-                while ($answer = $answers->fetch_assoc()) {
-                    if ($question['type'] == 1) {
-                        $html .= '<div class="text"><label>Введите ответ <input type="text" class="form-control" name="freeAnswer"></label></div>';
+                shuffle($answers); // перемешиваем ответы для каждого вопроса
+                foreach ($answers as $answer) {
+                    $isCorrect = false;
+                    if (strpos($answer, '*') === 0) {
+                        $isCorrect = true;
+                        $answer = substr($answer, 1); // убираем звездочку из правильного ответа
                     }
-                    else {
+                    if ($question['type'] == 1) {
+                        $html .= '<div class="text"><label>Введите ответ <input type="text" class="form-control" name="freeAnswer[' . $question['id'] . ']"></label></div>';
+                    } else {
                         if ($numOfCorrectAnswer == 1) {
-                            $html .= '<div class="radio"><label><input type="radio" name="writeOptionForQuest[' . $question['id'] . '][]" value="' . $answer['id'] . '"> ' . $answer['text'] . '</label></div>';
+                            $html .= '<div class="radio"><label><input type="radio" name="writeOptionForQuest[' . $question['id'] . '][]" value="' . $answer . '"> ' . $answer . '</label></div>';
                         } else {
-                            $html .= '<div class="checkbox"><label><input type="checkbox" name="writeOptionForQuest[' . $question['id'] . '][]" value="' . $answer['id'] . '"> ' . $answer['text'] . '</label></div>';
+                            $html .= '<div class="checkbox"><label><input type="checkbox" name="writeOptionForQuest[' . $question['id'] . '][]" value="' . $answer . '"> ' . $answer . '</label></div>';
                         }
                     }
                 }

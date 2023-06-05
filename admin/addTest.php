@@ -50,38 +50,39 @@
                         </div> 
 					</span>
 					<?php endif; ?> 
-					<form action="" method="post"> 
-						<!-- This is the target div. id must match the href of this div's tab -->
-                            <div class="form-group">
-                                <label for="question">Название</label>
-                                <input type="text" class="form-control" name="test_name" id="test_name" required/>
-                            </div>
+					<form action="" method="post">
+                        <!-- This is the target div. id must match the href of this div's tab -->
+                        <div class="form-group">
+                            <label for="question">Название</label>
+                            <input type="text" class="form-control" name="test_name" id="test_name" required/>
+                        </div>
 
-                            <div class="form-group">
-                                <label for="inputState">Направление</label>
-                                <select id="inputState" class="form-control" name="specialization" id="specialization" onclick="getSubject(this.value)" required>
-                                    <option value="0">Выберите направление</option>
-                                    <?php showSpec() ?>
-                                </select>
-                            </div>
+                        <div class="form-group">
+                            <label for="specialization">Направление</label>
+                            <select id="specialization" class="form-control" name="specialization" onchange="getSubjectsAndCompetences(this.value)" required>
+                                <option value="0">Выберите направление</option>
+                                <?php showSpec() ?>
+                            </select>
+                        </div>
 
+                        <div id="subjectAndCompetence">
                             <div class="form-group">
-                                <label for="inputState">Предмет</label>
-                                <select id="subjectdiv" class="form-control" name="subject" id="subject" onclick="getCompetence(this.value)" required>
+                                <label for="subject">Предмет</label>
+                                <select id="subject" class="form-control" name="subject" onchange="filterCompetence(this.value)">
                                     <option value="0">Выберите предмет</option>
                                 </select>
                             </div>
 
                             <div class="form-group">
-                                <label for="inputState">Компетенция</label>
-                                <select id="competencediv" class="form-control" name="competence" id="competence" required>
+                                <label for="competence">Компетенция</label>
+                                <select id="competence" class="form-control" name="competence" onchange="filterSubject(this.value)" required>
                                     <option value="0">Выберите компетенцию</option>
                                 </select>
                             </div>
+                        </div>
 
-
- 						<button type="submit" class="btn btn-default" name="addtest">Добавить</button>
-					</form>
+                        <button type="submit" class="btn btn-default" name="addtest">Добавить</button>
+                    </form>
 				</div> <!-- End .content-box-content -->
 			</div> <!-- End .content-box -->
 	</div>	<!--/.main-->

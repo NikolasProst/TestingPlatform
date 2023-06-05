@@ -66,7 +66,7 @@
                                 </div>
                                 <div class="form-group" id="div_option_2">
                                     <input type="checkbox" class="form-check-input" name="writeOption[]" value="2"/>
-                                    <label for="option_1" id="label_option1">Вариант №2</label>
+                                    <label for="option_2" id="label_option2">Вариант №2</label>
                                     <input type="text" class="form-control" name="option[]"/>
                                 </div>
                             </div>
@@ -108,7 +108,6 @@
             {
                 var optionDiv = document.getElementById('optionDiv');
                 var answer = document.getElementById('answer');
-                var options = document.getElementsByTagName('option');
 
                 if(checkBoxState) {
                     optionDiv.style.display = 'none';
@@ -121,14 +120,14 @@
             }
 
             function validateForm() {
-                var freeAnswer = document.getElementsByName("question_type");
+                var freeAnswer = document.getElementById('question_type').checked;
 
-                if(freeAnswer.checked === false) {
+                if(!freeAnswer) {
                     var options = document.getElementsByName("writeOption[]");
                     var checked = false;
 
                     for (var i = 0; i < options.length; i++) {
-                        if (options[i].checked === true) {
+                        if (options[i].checked) {
                             checked = true;
                             break;
                         }
@@ -146,11 +145,19 @@
                         }
                     }
                 }
-                var answerTexts = document.getElementsByName("answer");
-                if (answerTexts.value.trim() === "") {
+
+                var answerTexts = document.getElementsByName("answer")[0].value.trim();
+                if (freeAnswer && answerTexts === "") {
                     alert("Заполните эталонный ответ");
                     return false;
                 }
+
+                var questionText = document.getElementById("question").value.trim();
+                if (questionText === "") {
+                    alert("Заполните поле 'Вопрос'");
+                    return false;
+                }
+
                 return true;
             }
         </script>
