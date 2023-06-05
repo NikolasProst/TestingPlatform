@@ -117,9 +117,15 @@
                 </div>
             </div>
             </form>
+            <div class="row">
+                <div class="col-sm-12">
+                    <button id="export-csv-btn" class="btn btn-success">Сделать выгрузку</button>
+                </div>
+            </div>
         </div> <!-- End .content-box-content -->
     </div> <!-- End .content-box -->
-</div>	<!--/.main--><script>$(document).ready(function(){$('#status').change(function(){
+</div>	<!--/.main-->
+    <script>$(document).ready(function(){$('#status').change(function(){
         if($(this).prop('checked')) {
             $('#hidden_status').val('enable');
             document.getElementById('enable_disable').submit();
@@ -129,6 +135,14 @@
             document.getElementById('enable_disable').submit();
         }
     });});
+
+    $(document).ready(function() {
+        $('#export-csv-btn').click(function() {
+            // Send a GET request to the PHP script that generates the CSV file
+            window.location.href = 'exportFreeAnswers.php';
+        });
+    });
+
 </script>
 
 <?php include('footer.php'); ?>
