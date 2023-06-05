@@ -8,7 +8,7 @@ include('config.php');
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">    
         <title>Online Test  | <?php echo ucfirst($title); ?></title>
-        <link rel="stylesheet" type="text/css" href="css/style_v2.css">
+        <link rel="stylesheet" type="text/css" href="css/style_v3.1.css">
         <!-- Bootstrap -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css">

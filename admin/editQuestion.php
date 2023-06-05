@@ -36,6 +36,7 @@ $options_array = array_filter($options_array);
         <ol class="breadcrumb">
             <li><a href="index.php"><em class="fa fa-home"></em></a></li>
             <li><a href="test_list.php">Тесты</a></li>
+            <li><a href="viewTest.php?test_id=<?php echo $test_id ?>">Тест <?php echo $test_id ?></a></li>
             <li>Редактировать вопрос</li>
         </ol>
     </div><!--/.row-->
@@ -122,8 +123,7 @@ $options_array = array_filter($options_array);
                         <?php if ($rowQues['image'] != '') : ?>
                             <div class="question-image">
                                 <img src="<?php echo $rowQues['image']; ?>" alt="Question Image" class="img-thumbnail"/>
-                                <a href="deleteImage.php?id=<?php echo $ques_id; ?>&test_id=<?php echo $test_id; ?>&type=ques"><i
-                                            class="fa fa-trash"></i></a>
+                                <input type="checkbox" name="delete_image" value="Yes" style="margin-left: 10px;">Удалить картинку
                             </div>
                         <?php endif; ?>
                             <label for="question">Загрузить картинку для вопроса</label>

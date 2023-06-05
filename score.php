@@ -51,15 +51,49 @@ $answer = answer($_POST);
 					    </tbody>
   					</table>
   					<br/>
-                	<?php 
-                	if($percentage < 50) {
-						echo '<h4 class="center">😓 Вы должны набрать больше 50% правильных ответов, чтобы пройти тест.</h4>';
-					}
-					else {
-						echo '<h4 class="center">🙂🥳 Вы прошли тест, Ваш результат '.round($percentage).'%.</h4>';
-					}
-                	?>
-                	<div class="center">
+                    <?php
+                    if($percentage < 50) {
+                        echo '<h4 class="center">😓 Вы должны набрать больше 50% правильных ответов, чтобы пройти тест.</h4>';
+                    }
+                    else {
+                        echo '<h4 class="center">🙂🥳 Вы прошли тест, Ваш результат '.round($percentage).'%.</h4>';
+                    }
+
+                    ?>
+                    <br/>
+                        <?php
+                        if (!empty($answer['incorrect_answers'])) {
+                            echo "<h3>Неправильные ответы:</h3><br/>";
+                            foreach ($answer['incorrect_answers'] as $q_id => $q_text) {
+                                $html = '<div class="content-box"><div class="content-box-content"><div class="question"> <div><span>Вопрос: </span>' . $q_text . '</div>';
+
+                                $sql = "SELECT id, text, option_1, option_2, option_3, option_4, write_options, image, type, answer_for_free FROM questions WHERE id='" . $q_id . "'";
+
+                                $result = $conn->query($sql);
+                                $question = $result->fetch_assoc();
+
+                                if ($question['image'] != null) {
+                                    $html .= '<img src="admin/' . $question['image'] . '" class="img-answer">';
+                                }
+
+                                $selectAnswerIds = $_POST['writeOptionForQuest'][$question['id']];
+
+                                for ($j = 1; $j <= 4; $j++) {
+                                    $option_key = 'option_' . $j;
+                                    if (!empty($question[$option_key])) {
+                                        if (in_array($question[$option_key], $selectAnswerIds)) {
+                                            $html .= '<div style="background-color: #ff3a11"><span>Вариант №' . $j . ':</span>' . $question[$option_key] . '</div>';
+                                        } else {
+                                            $html .= '<div><span>Вариант №' . $j . ':</span>' . $question[$option_key] . '</div>';
+                                        }
+                                    }
+                                }
+                                $html .= '</div></div>';
+                                echo $html;
+                            }
+                        }
+                        ?>
+                    <div class="center">
                 		<a href="index.php" class="btn btn-primary btn-lg">Назад к выбору теста</a>
                 	</div>
                 </div>

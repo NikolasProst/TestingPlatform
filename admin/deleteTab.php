@@ -72,6 +72,17 @@ if(isset($_GET['action']) && $_GET['action'] == "removeConSts") {
         header('location: connectSpecToSubj_list.php');
 }
 
+if(isset($_GET['action']) && $_GET['action'] == "removeFreeAnswer") {
+        $ans_id = $_REQUEST['ans_id'];
+        $delete = "DELETE FROM freeanswersstats WHERE id = '" . $ans_id . "'";
+        if ($conn->query($delete) === TRUE) {
+            $_SESSION['success'] = "Вариант ответа удален";
+        } else {
+            $_SESSION['error'] = $conn->error;
+        }
+        header('location: freeAnswers_list.php');
+}
+
 if(isset($_GET['action']) && $_GET['action'] == "delete")
 {
         $ques_id = $_REQUEST['ques_id'];

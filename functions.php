@@ -152,6 +152,10 @@ function getLastIdCompetence() {
 function answer($data)
 {
     global $conn;
+    $array = array();
+    $array['correct_answers'] = array();
+    $array['incorrect_answers'] = array();
+
     $test_id = $data['test_id'];
     $freeAnswer = $data['freeAnswer'];
     $right = 0;
@@ -164,6 +168,9 @@ function answer($data)
 
         if (isset($freeAnswer[$question['id']])) {
             $userAnswer = $freeAnswer[$question['id']];
+            if ($userAnswer != null) {
+                insertFreeAnswerStats($question, $userAnswer);
+            }
         }
 
         if (isset($data['writeOptionForQuest'][$question['id']])) {
@@ -219,20 +226,35 @@ function answer($data)
 
                 if ($is_right) {
                     $right++;
+                    $array['correct_answers'][$question['id']] = $question['text'];
                 } else {
                     $wrong++;
+                    $array['incorrect_answers'][$question['id']] = $question['text'];
                 }
             }
         }
     }
-
-    $array = array();
     $array['test_id'] = $test_id;
     $array['right'] = $right;
     $array['wrong'] = $wrong;
     $array['no_answer'] = $no_answer;
 
     return $array;
+}
+
+function insertFreeAnswerStats($question, $userAnswer)
+{
+    global $conn;
+    $sql = "SELECT id_question, userAnswer FROM freeanswersstats WHERE userAnswer ='" . $userAnswer . "' AND id_question = '" . $question['id'] . "'";
+    $result = $conn->query($sql);
+    $count = $result->num_rows;
+    print_r($count);
+    if ($count == 0) {
+        $sql = "INSERT INTO freeanswersstats(ID_QUESTION, TEXT, WRITEANSWER, USERANSWER) 
+                    VALUE ('" . $question['id'] . "', '" . $question['text'] . "', '" . $question['answer_for_free'] . "', '" . $userAnswer . "')";
+        $conn->query($sql);
+        print_r($conn->error);
+    }
 }
 
 //shows test's questions in admin panel
@@ -247,7 +269,7 @@ function showQuestions()
         $data = $row['test_title'];
     }
 
-    $sql = "SELECT id, text, option_1, option_2, option_3, option_4, write_options, image, type, answer_for_free FROM questions WHERE id_test='".$test_id."'";
+    $sql = "SELECT id, text, option_1, option_2, option_3, option_4, write_options, image, type, answer_for_free, last_update_user, date_update FROM questions WHERE id_test='".$test_id."'";
 
     $result = $conn->query($sql);
     $count = $result->num_rows;
@@ -280,9 +302,14 @@ function showQuestions()
             if ($rowQuestion['write_options'] != null) {
                 $html .= '<div><span>Ответ:</span>' . $rowQuestion['write_options'] . '</div>';
             }
+            $html .= '<div><a class="edit" href="editQuestion.php?ques_id=' . $rowQuestion["id"] . '&test_id=' . $test_id . '" data-toggle="tooltip" title="Edit Question">Редактировать вопрос <i class="fa fa-edit"></i></a></div>';
 
-            $html .= '<div><a class="delete" href="deleteTab.php?action=delete&ques_id=' . $rowQuestion["id"] . '&number=' . $i . '&test_id=' . $test_id . '" data-toggle="tooltip" title="Delete Question">Удалить вопрос <i class="fa fa-trash"></i></a></div> 
-                </div> ';
+            $html .= '<div><a class="delete" href="deleteTab.php?action=delete&ques_id=' . $rowQuestion["id"] . '&number=' . $i . '&test_id=' . $test_id . '" data-toggle="tooltip" title="Delete Question">Удалить вопрос <i class="fa fa-trash"></i></a></div>';
+            if ($rowQuestion['last_update_user'] != null) {
+                $html .= '<div style="text-align: right; font-size: 12px;"><span>' . $rowQuestion['last_update_user'] . '</span>редактировал последним</div>';
+                $html .= '<div style="text-align: right; font-size: 12px;"><span>' . $rowQuestion['date_update'] . '</span>: дата изменения</div>';
+            }
+            $html .= '</div> ';
             echo $html;
             $i++;
         }

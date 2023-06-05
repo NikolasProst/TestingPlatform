@@ -201,3 +201,8 @@ function addQuestionOnTest(testId) {
         req.send(null);
     }
 }
+
+function updateFreeAnswersState() {
+    var is_true = document.getElementById('is_true[]')
+    alert(is_true);
+}

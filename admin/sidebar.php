@@ -50,6 +50,8 @@
 			</ul>
 		</li>		</li>
 
+        <li><a href="freeAnswers_list.php"><span class="fa fa-commenting-o">&nbsp;</span> Свободные вопросы</a></li>
+
 		<li><a href="logout.php"><em class="fa fa-power-off">&nbsp;</em> Выйти</a></li>
 	</ul>
 </div><!--/.sidebar-->
