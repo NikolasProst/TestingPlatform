@@ -13,15 +13,45 @@ if (isset($_POST['startTest'])) {
     $specialization = $_POST['specialization'];
     $subject = $_POST['subject'];
     $competence = $_POST['competence'];
-    $sql = "SELECT id FROM tests where id_specialization = '" . $specialization . "' and id_subject = '" . $subject . "' and id_competence = '" . $competence . "' ORDER BY RAND() limit 1";
-    $result = $conn->query($sql);
+    $trainingMode = $_POST['isTrainingMode'];
+    $countQuestion = $_POST['countQuestion'];
+    $countFreeQuestion = $_POST['countFreeQuestion'];
 
-    while ($test = $result->fetch_assoc()) {
-        if ($test['id'] != null) {
-            header('location: exam.php?test_id=' . $test['id']);
+    $sql = '';
+    if ($specialization != 0) {
+        if ($subject != 0 && $competence != 0) {
+            $sql = "SELECT id FROM tests where id_specialization = '" . $specialization . "' and id_subject = '" . $subject . "' and id_competence = '" . $competence . "' ORDER BY RAND() limit 1";
         } else {
-            $_SESSION['error'][] = $conn->error;
+            $sql = "";
+            if ($subject != 0 && $competence == 0) {
+                $sql .= "SELECT id FROM tests where id_specialization = '" . $specialization . "' and id_subject = '" . $subject . "' ORDER BY RAND()";
+            }
+            if ($competence != 0 && $subject == 0) {
+                $sql .= "SELECT id FROM tests where id_specialization = '" . $specialization . "' and id_competence = '" . $competence . "' ORDER BY RAND()";
+            }
         }
+    }
+
+    if ($sql != '') {
+        $result = $conn->query($sql);
+    }
+
+    $tests = array();
+
+    $getPath = '';
+    if (!empty($result)) {
+        while ($test = $result->fetch_assoc()) {
+            $tests[] = $test['id'];
+        }
+    }
+
+    foreach ($tests as $test) {
+        $getPath .= 'tests_ids[]=' . urlencode($test) . '&';
+    }
+    $getPath = rtrim($getPath, '&');
+
+    if (!empty($tests)) {
+        header('location: exam.php?competence='. $competence .'&subject=' . $subject .'&trainingMode=' . $trainingMode . '&countQuestion=' . $countQuestion . '&countFreeQuestion=' . $countFreeQuestion . '&'. $getPath);
     }
 }
 
@@ -74,8 +104,23 @@ include('header.php');
                                             </select>
                                         </div>
                                     </div>
-
+                                    <input type="hidden" name="isTrainingMode" id="isTrainingMode" value="0">
                                     <div class="form-group col-md-auto">
+                                        <div class="form-check" style="float: right">
+                                            <input class="form-check-input" type="checkbox" id="trainingModeCheckbox" name="trainingMode">
+                                            <label class="form-check-label" for="trainingModeCheckbox">Режим тренировки</label>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="inputState" for="countQuestion">Количество вопросов в тесте</label>
+                                            <input class="form-input" type="number" style="width: 50px" max="100" value="15" min="0" id="countQuestion" name="countQuestion" >
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="inputState" for="countFreeQuestion">Количество вопросов с свободным ответом</label>
+                                            <input class="form-input" type="number" style="width: 50px" max="100" value="15" min="0" id="countFreeQuestion" name="countFreeQuestion">
+                                        </div>
+
                                         <button type="submit" class="btn btn-primary" name="startTest">Сформировать тест</button>
                                     </div>
                                 </div>
@@ -85,5 +130,11 @@ include('header.php');
             </div>
         </div>
     </div>
+    <script>
+        document.getElementById('trainingModeCheckbox').addEventListener('change', function() {
+            var hiddenInput = document.getElementsByName('isTrainingMode')[0];
+            hiddenInput.value = this.checked ? 1 : 0;
+        });
+    </script>
 <?php include('footer.php');
 

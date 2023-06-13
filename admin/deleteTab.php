@@ -12,7 +12,7 @@ if(isset($_GET['action']) && $_GET['action'] == "removeTest") {
     } else {
         $_SESSION['error'] = $conn->error;
     }
-    header('location: test_list.php');
+    header('location: index.php');
 }
 
 if(isset($_GET['action']) && $_GET['action'] == "removeSpec") {

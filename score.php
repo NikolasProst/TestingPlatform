@@ -12,15 +12,15 @@ $answer = answer($_POST);
             <div class="row">
                 <div class="col-lg-12 col-md-12 col-sm-12">
                 	<?php
-                    $total_question_sql = "SELECT COUNT(*) AS total FROM questions WHERE id_test='".$answer['test_id']."'";
+                    $total_question_sql = "SELECT COUNT(*) AS total FROM questions WHERE id_test in(" . $_POST['ids'] . ")";
                     $total_question_result = $conn->query($total_question_sql);
                     $total_question_row = $total_question_result->fetch_assoc();
                     $total_question = $total_question_row['total'];
                 	$attempt_question = $answer['right']+$answer['wrong'];
                 	?>
                 	<h1>
-                		<?php echo $row['test_title'];?> (Тест <?php echo $answer['test_id']; ?>) Результат:
-                	</h1><br/>
+                        Результат:
+                	</h1>
                 	<table class="table table-bordered">
 					    <thead>
 					    	<tr>
@@ -63,7 +63,7 @@ $answer = answer($_POST);
                     <br/>
                         <?php
                         if (!empty($answer['incorrect_answers'])) {
-                            echo "<h3>Неправильные ответы:</h3><br/>";
+                            echo "<h3>Неправильные ответы:</h3>";
                             foreach ($answer['incorrect_answers'] as $q_id => $q_text) {
                                 $html = '<div class="content-box"><div class="content-box-content"><div class="question"> <div><span>Вопрос: </span>' . $q_text . '</div>';
 
@@ -76,22 +76,50 @@ $answer = answer($_POST);
                                     $html .= '<img src="admin/' . $question['image'] . '" class="img-answer">';
                                 }
 
-                                $selectAnswerIds = $_POST['writeOptionForQuest'][$question['id']];
-
+                                $selectAnswerIds = $_POST['selectedOptionForQuest'][$question['id']];
+                                $writeOptions = explode(',', $question['write_options']);
                                 for ($j = 1; $j <= 4; $j++) {
                                     $option_key = 'option_' . $j;
                                     if (!empty($question[$option_key])) {
+                                        $color = "white";
                                         if (in_array($question[$option_key], $selectAnswerIds)) {
-                                            $html .= '<div style="background-color: #ff3a11"><span>Вариант №' . $j . ':</span>' . $question[$option_key] . '</div>';
-                                        } else {
-                                            $html .= '<div><span>Вариант №' . $j . ':</span>' . $question[$option_key] . '</div>';
+                                            $color = "red";
                                         }
+                                        if ($_POST['trainingMode'] == 1) {
+                                            if (in_array($j, $writeOptions)) {
+                                                $color = "green";
+                                            }
+                                            if (in_array($question[$option_key], $selectAnswerIds) && in_array($j, $writeOptions)) {
+                                                $color = "yellow";
+                                            }
+                                        }
+                                        $html .= '<div style="background-color:' . $color . '"><span>Вариант №' . $j . ':</span>' . $question[$option_key] . '</div>';
                                     }
                                 }
                                 $html .= '</div></div>';
                                 echo $html;
                             }
                         }
+                        echo "<h3>Свободные вопросы:</h3>";
+
+                        $html = '<div class="content-box"><div class="content-box-content">';
+                        $sql = "SELECT id, text, image, type, answer_for_free FROM questions WHERE id_test in(" . $_POST['ids'] . ")";
+                        $result = $conn->query($sql);
+                        while ($question =  $result->fetch_assoc()) {
+                            if ($question['type'] == 1)
+                            {
+                                $html = '<div class="question"> <div><span>Вопрос: </span>' . $question['text'] . '</div>';
+                                if ($question['image'] != null) {
+                                    $html .= '<img src="admin/' . $question['image'] . '" class="img-answer">';
+                                }
+                                $html .= '<div><span>Эталонный ответ: ' . $question['answer_for_free'] . ':</span></div>';
+                                $html .= '<div><span>Введенный ответ: ' . $answer['free_answers'][$question['id']] . ':</span></div>';
+                            }
+                        }
+
+                        $html .= '</div></div>';
+                        echo $html;
+
                         ?>
                     <div class="center">
                 		<a href="index.php" class="btn btn-primary btn-lg">Назад к выбору теста</a>

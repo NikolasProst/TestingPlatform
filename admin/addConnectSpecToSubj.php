@@ -29,6 +29,8 @@ if (isset($_POST['addSubj']))
                 <li><a href="index.php">
                         <em class="fa fa-home"></em>
                     </a></li>
+                <li><a href="connectSpecToSubj_list.php">Cвязь направление -> предмет</a></li>
+                <li>Создание связи</li>
             </ol>
         </div><!--/.row-->
 

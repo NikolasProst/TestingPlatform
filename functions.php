@@ -161,20 +161,20 @@ function answer($data)
     $right = 0;
     $wrong = 0;
     $no_answer = 0;
-    $sql = "SELECT * FROM questions WHERE id_test='" . $test_id . "'";
+
+    $sql = "SELECT * FROM questions WHERE id_test in(" . $data['ids'] . ")";
     $result = $conn->query($sql);
     while ($question = $result->fetch_assoc()) {
         $selectAnswerIds = array();
+        $userAnswer = isset($freeAnswer[$question['id']]) ? $freeAnswer[$question['id']] : '';
 
-        if (isset($freeAnswer[$question['id']])) {
-            $userAnswer = $freeAnswer[$question['id']];
-            if ($userAnswer != null) {
-                insertFreeAnswerStats($question, $userAnswer);
-            }
+        if ($userAnswer != '') {
+            $array['free_answers'][$question['id']] = $userAnswer;
+            insertFreeAnswerStats($question, $userAnswer);
         }
 
-        if (isset($data['writeOptionForQuest'][$question['id']])) {
-            $selectAnswerIds = $data['writeOptionForQuest'][$question['id']];
+        if (isset($data['selectedOptionForQuest'][$question['id']])) {
+            $selectAnswerIds = $data['selectedOptionForQuest'][$question['id']];
         }
 
         $correctAnswers = explode(',', $question['write_options']);
@@ -189,7 +189,7 @@ function answer($data)
         } else {
             $is_right = true;
 
-            if ($question['type'] == 1) {
+            if ($question['type'] == 1 && $userAnswer != '') {
                 if ($question['answer_for_free'] == $userAnswer) {
                     $right++;
                 } else {
@@ -248,12 +248,11 @@ function insertFreeAnswerStats($question, $userAnswer)
     $sql = "SELECT id_question, userAnswer FROM freeanswersstats WHERE userAnswer ='" . $userAnswer . "' AND id_question = '" . $question['id'] . "'";
     $result = $conn->query($sql);
     $count = $result->num_rows;
-    print_r($count);
+
     if ($count == 0) {
         $sql = "INSERT INTO freeanswersstats(ID_QUESTION, TEXT, WRITEANSWER, USERANSWER) 
                     VALUE ('" . $question['id'] . "', '" . $question['text'] . "', '" . $question['answer_for_free'] . "', '" . $userAnswer . "')";
         $conn->query($sql);
-        print_r($conn->error);
     }
 }
 
@@ -353,25 +352,38 @@ function showExamQuestions() {
     return false;
 }
 
-function showTestTable() {
-
-}
-
 //user submit test by using previous/next question button
 function enableSingleQuestion()
 {
-    global $conn, $test_id, $user_id;;
-    $sql = "SELECT * FROM questions WHERE id_test='" . $test_id . "' ORDER BY RAND()";
-    $result = $conn->query($sql);
+    global $conn, $tests_ids, $trainingMode, $countQuestion, $countFreeQuestion;
 
-    if ($result->num_rows > 0) {
-        $count = $result->num_rows;
+    $ids = implode(',', $tests_ids);
+    $sql = "SELECT * FROM questions WHERE id_test in(" . $ids . ") AND type = 0 ORDER BY RAND() LIMIT " . $countQuestion;
+    $sqlFree = "SELECT * FROM questions WHERE id_test in(" . $ids . ") AND type = 1 ORDER BY RAND() LIMIT " . $countFreeQuestion;
+
+    $resultFree = $conn->query($sqlFree);
+    $resultTest = $conn->query($sql);
+
+    $result = array();
+
+    while ($row = $resultFree->fetch_array(MYSQLI_ASSOC))
+    {
+        $result[] = $row;
+    }
+
+    while ($row = $resultTest->fetch_array(MYSQLI_ASSOC))
+    {
+        $result[] = $row;
+    }
+
+    if (count($result) > 0) {
+        $count = count($result);
         $i = 1;
         $html = '<form action="score.php" method="post" class="exam" id="examForm" >';
         $html .= '<div class="form-group "> <div class="form-group col-md-auto">';
-        while ($question = $result->fetch_assoc()) {
-
-            $html .= '<div class="tab "><h4>Вопрос ' . $i . ' of ' . $count . ':</h4><p>' . $question['text'] . '</p>';
+        foreach ($result as $question)
+        {
+            $html .= '<div class="tab "><h4>Вопрос ' . $i . ' из ' . $count . ':</h4><p>' . $question['text'] . '</p>';
 
             if ($question['image'] != '') {
                 $html .= '<img src="admin/' . $question['image'] . '" class="img-thumbnail">';
@@ -408,12 +420,16 @@ function enableSingleQuestion()
                         $answer = substr($answer, 1); // убираем звездочку из правильного ответа
                     }
                     if ($question['type'] == 1) {
-                        $html .= '<div class="text"><label>Введите ответ <input type="text" class="form-control" name="freeAnswer[' . $question['id'] . ']"></label></div>';
+                        if ($trainingMode == 1)
+                        {
+                            $html .= '<div class="text" style="padding-bottom: 10px"><label><b>Эталонный ответ</b> : ' . $question['answer_for_free'] . '</label><br></div>';
+                        }
+                        $html .= '<div class="text"><label>Введите ответ </label><br><textarea class="form-control" name="freeAnswer[' . $question['id'] . ']" rows="5"></textarea></div>';
                     } else {
                         if ($numOfCorrectAnswer == 1) {
-                            $html .= '<div class="radio"><label><input type="radio" name="writeOptionForQuest[' . $question['id'] . '][]" value="' . $answer . '"> ' . $answer . '</label></div>';
+                            $html .= '<div class="radio"><label><input type="radio" name="selectedOptionForQuest[' . $question['id'] . '][]" value="' . $answer . '"> ' . $answer . '</label></div>';
                         } else {
-                            $html .= '<div class="checkbox"><label><input type="checkbox" name="writeOptionForQuest[' . $question['id'] . '][]" value="' . $answer . '"> ' . $answer . '</label></div>';
+                            $html .= '<div class="checkbox"><label><input type="checkbox" name="selectedOptionForQuest[' . $question['id'] . '][]" value="' . $answer . '"> ' . $answer . '</label></div>';
                         }
                     }
                 }
@@ -422,7 +438,11 @@ function enableSingleQuestion()
             $html .= '</div>';
             $i++;
         }
-        echo $html .= '<input type="hidden" name="test_id" value="' . $test_id . '" /><button type="button" id="nextBtn" onclick="nextPrev(1)">Следующий вопрос</button></div></form></div>';
+        echo $html .= '<input type="hidden" name="trainingMode" value="' . $trainingMode . '">
+        <input type="hidden" name="ids" value="' . $ids . '" />
+        <button type="button" id="nextBtn" onclick="nextPrev(1)">Следующий вопрос</button>
+        <button type="button" style="float: right; background-color: orangered" id="finishBtn" onclick="finishTest()">Досрочно завершить тест</button></div>
+        </form></div>';
     }
     return false;
 }

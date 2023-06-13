@@ -30,6 +30,8 @@ if (isset($_POST['addSubj']))
                 <li><a href="index.php">
                         <em class="fa fa-home"></em>
                     </a></li>
+                <li><a href="connectSubjToComp_list.php">Связь предмет -> компетенция</a></li>
+                <li>Создание связи</li>
             </ol>
         </div><!--/.row-->
 

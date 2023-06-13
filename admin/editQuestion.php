@@ -5,7 +5,7 @@ include('../functions.php');
 include('checkAdminData.php');
 include('header.php');
 if (!isset($_GET['ques_id'])) {
-    header('Location: test_list.php');
+    header('Location: index.php');
 }
 $ques_id = $_GET['ques_id'];
 $test_id = $_GET['test_id'];
@@ -14,7 +14,7 @@ $sqlQues = "SELECT * FROM questions WHERE id=" . $ques_id . " AND id_test=" . $t
 $resultQues = $conn->query($sqlQues);
 
 if ($resultQues->num_rows == 0) {
-    header('Location: test_list.php');
+    header('Location: index.php');
 }
 
 $rowQues = $resultQues->fetch_assoc();
@@ -35,7 +35,7 @@ $options_array = array_filter($options_array);
     <div class="row">
         <ol class="breadcrumb">
             <li><a href="index.php"><em class="fa fa-home"></em></a></li>
-            <li><a href="test_list.php">Тесты</a></li>
+            <li><a href="index.php">Тесты</a></li>
             <li><a href="viewTest.php?test_id=<?php echo $test_id ?>">Тест <?php echo $test_id ?></a></li>
             <li>Редактировать вопрос</li>
         </ol>
@@ -47,23 +47,6 @@ $options_array = array_filter($options_array);
     </div><!--/.row-->
     <div class="content-box"><!-- Start Content Box -->
         <div class="content-box-content">
-            <?php if (isset($_SESSION['error'])) : ?>
-                <span id="message">
-                    <div class="alert alert-danger">
-                        <?php echo $_SESSION['error'];
-                        unset($_SESSION['error']); ?>
-                    </div>
-                </span>
-            <?php endif; ?>
-
-            <?php if (isset($_SESSION['success'])) : ?>
-                <span id="message">
-                    <div class="alert alert-success">
-                        <?php echo $_SESSION['success'];
-                        unset($_SESSION['success']); ?>
-                    </div>
-                </span>
-            <?php endif; ?>
             <form id="addForm" action="updateQuiz.php" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
                 <div class="form-group col-md-12">
                     <div class="row">

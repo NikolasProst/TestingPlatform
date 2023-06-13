@@ -41,8 +41,7 @@ $test_id = $_GET['exam_no'];
                                 // output data of each row
                                 while ($row1 = $result2->fetch_assoc()) {
 									$mark = $row1['marks'];
-									$marks = explode (",", $mark);  
-									print_r($marks); 
+									$marks = explode (",", $mark);
 								}
 							}
 

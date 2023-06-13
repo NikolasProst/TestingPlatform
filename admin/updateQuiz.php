@@ -19,8 +19,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $adminData = $_SESSION['admindata']['admin_email'];
     $dateUpdate = date('Y-m-d H:i:s');
 
-    print_r($_POST);
-
     // Обновляем данные о вопросе в таблице questions
     $sqlQues = "UPDATE questions SET text='$question',";
     for ($i = 1; $i <= 4; $i++) {
@@ -31,19 +29,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $sqlQues .= "write_options='$strWriteOptions', answer_for_free='$answer',";
 
-    if ($delete_image == 1 && $_FILES['picture']['name'] == null)
+    if ($delete_image == 1)
     {
         deleteImage($ques_id);
         $sqlQues .= "image='', ";
     }
-    else {
+
+    if ($_FILES['picture']['name'] != null)
+    {
         $imagePath = updateImage($ques_id);
         $sqlQues .= "image='$imagePath', ";
     }
 
     $sqlQues .= "last_update_user='$adminData', date_update='$dateUpdate' WHERE id='$ques_id' AND id_test='$test_id'";
-
-    print_r($sqlQues);
 
     if ($conn->query($sqlQues) === TRUE) {
         $_SESSION['success'] = "Вопрос успешно изменен.";

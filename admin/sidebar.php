@@ -2,20 +2,19 @@
     $url = $_SERVER['REQUEST_URI'];
     $path = parse_url($url, PHP_URL_PATH);
     $filename = basename($path);
-    $test_menu = array('test_list.php', 'addTest.php', 'viewTest.php', 'addQuestion.php');
+    $test_menu = array('index.php', 'addTest.php', 'viewTest.php', 'addQuestion.php');
     $user_menu = array('testResult.php', 'users.php');
 ?>
 
 <div id="sidebar-collapse" class="col-sm-3 col-lg-2 sidebar">
 	<ul class="nav menu">
-		<li><a href="index.php"><em class="fa fa-dashboard">&nbsp;</em> Главная</a></li>
 		<li class="parent <?php if(in_array($filename,$test_menu)): ?>current<?php endif; ?>">
 			<a data-toggle="collapse" href="#sub-item-1">
 				<em class="fa fa-check-square-o">&nbsp;</em> Тесты<span data-toggle="collapse" href="#sub-item-1" class="icon pull-right"><em class="fa fa-plus"></em></span>
 			</a>
 			<ul class="children collapse" id="sub-item-1">
 				<li>
-					<a href="test_list.php">
+					<a href="index.php">
 						<span class="fa fa-arrow-right">&nbsp;</span> Просмотр тестов
 					</a>
 				</li>

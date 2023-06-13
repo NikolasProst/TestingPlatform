@@ -3,7 +3,12 @@
     include('header.php');
     include_once('functions.php');
 
-    $test_id = $_GET['test_id'];
+    $tests_ids = $_GET['tests_ids'];
+    $subject = $_GET['subject'];
+    $competence = $_GET['competence'];
+    $trainingMode = $_GET['trainingMode'];
+    $countQuestion = $_GET['countQuestion'];
+    $countFreeQuestion = $_GET['countFreeQuestion'];
 ?>
     <div class="d-flex flex-column justify-content-center align-items-center">
         <div class="container content">
@@ -11,10 +16,29 @@
                 <div class="col-lg-12 col-md-auto col-sm-12">
                     <h1>
                         <?php
-                        $sql = "SELECT * FROM tests WHERE id='".$test_id."'";
-                        $result = $conn->query($sql);
-                        $row = $result->fetch_assoc();
-                        echo $row['test_title'];?>
+                            $sql = "SELECT * FROM tests WHERE ";
+                            if (count($tests_ids) == 1) {
+                                foreach ($tests_ids as $test_id) {
+                                    $sql .=  "id='" . $test_id . "'";
+                                    $result = $conn->query($sql);
+                                    $row = $result->fetch_assoc();
+                                    echo $row['test_title'];
+                                }
+                            } else {
+                                if ($competence != 0) {
+                                    $sql = "SELECT * FROM competences WHERE id ='" . $competence ."'";
+                                    $result = $conn->query($sql);
+                                    $row = $result->fetch_assoc();
+                                    echo "Тест по помпетенции '" . $row['name'] ."'";
+                                }
+                                if ($subject != 0) {
+                                    $sql = "SELECT * FROM subjects WHERE id ='" . $subject ."'";
+                                    $result = $conn->query($sql);
+                                    $row = $result->fetch_assoc();
+                                    echo "Тест по предмету '" . $row['name'] ."'";
+                                }
+                            }
+                         ?>
                     </h1>
 
                     <?php enableSingleQuestion(); ?>
@@ -48,6 +72,9 @@
                             }
                             // Otherwise, display the correct tab:
                             showTab(currentTab);
+                        }
+                        function finishTest() {
+                            document.getElementById("examForm").submit();
                         }
                     </script>
                 </div>
