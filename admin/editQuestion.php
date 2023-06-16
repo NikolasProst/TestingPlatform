@@ -50,6 +50,21 @@ $options_array = array_filter($options_array);
             <form id="addForm" action="updateQuiz.php" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
                 <div class="form-group col-md-12">
                     <div class="row">
+                        <?php if(isset($_SESSION['error'])) : ?>
+                            <span id="message">
+                                <div class="alert alert-danger">
+                                    <?php echo $_SESSION['error']; unset($_SESSION['error']);  ?>
+                                </div>
+                            </span>
+                        <?php endif; ?>
+
+                        <?php if(isset($_SESSION['success'])) : ?>
+                            <span id="message">
+                                <div class="alert alert-success">
+                                    <?php echo $_SESSION['success']; unset($_SESSION['success']); ?>
+                                </div>
+                            </span>
+                        <?php endif; ?>
                         <div class="form-group col-md-9">
                             <label for="question">Вопрос</label>
                             <input type="text" class="form-control" name="question" id="question" placeholder="Введите вопрос" value="<?php echo $rowQues['text']; ?>" required/>

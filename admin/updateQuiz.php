@@ -29,16 +29,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $sqlQues .= "write_options='$strWriteOptions', answer_for_free='$answer',";
 
-    if ($delete_image == 1)
-    {
-        deleteImage($ques_id);
+    if ($delete_image == 1) {
+        deleteImageFromServer($ques_id);
         $sqlQues .= "image='', ";
     }
 
-    if ($_FILES['picture']['name'] != null)
-    {
-        $imagePath = updateImage($ques_id);
-        $sqlQues .= "image='$imagePath', ";
+    if (isset($_FILES['picture']) && $_FILES['picture']['name'] != null && $_FILES['picture']['error'] == UPLOAD_ERR_OK) {
+        // Проверка на максимальный размер файла
+        $max_file_size = 10 * 1024 * 1024; // 10 MB
+        if ($_FILES['picture']['size'] > $max_file_size) {
+            $_SESSION['error'] ='Файл слишком большой. Максимальный размер файла: ' . $max_file_size / (1024 * 1024) . ' MB';
+            header("Location: {$_SERVER['HTTP_REFERER']}");
+            exit;
+        }
+        $imagePath = saveImage($ques_id);
+        $sqlQues .= "image='" . $imagePath . "', ";
     }
 
     $sqlQues .= "last_update_user='$adminData', date_update='$dateUpdate' WHERE id='$ques_id' AND id_test='$test_id'";
@@ -48,48 +53,60 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         header('location: viewTest.php?test_id=' . $test_id);
     } else {
         $_SESSION['error'] = "Произошла ошибка при изменении вопроса: " . $conn->error;
+        header("Location: {$_SERVER['HTTP_REFERER']}");
+        exit;
     }
-
 }
 
-function updateImage($ques_id)
+function saveImage($question_id)
 {
     global $conn;
-    $sql = "SELECT image FROM questions WHERE id='".$ques_id."'";
-    $result = $conn->query($sql);
-    $data = '';
-
-    while ($row = $result->fetch_assoc()) {
-        $data = $row['image'];
+    if (!isset($_FILES['picture']) || $_FILES['picture']['error'] == UPLOAD_ERR_NO_FILE) {
+        return '';
     }
 
-    // Пути загрузки файлов
+// Пути загрузки файлов
     $path = 'images/';
     $tmp_path = 'tmp/';
-    // Массив допустимых значений типа файла
+// Массив допустимых значений типа файла
     $types = array('image/png', 'image/jpeg', 'image/jpg');
     $imagePath = '';
 
-    if ($_FILES['picture']['name'] != null) {
-        if (!in_array($_FILES['picture']['type'], $types))
-            die('Запрещённый тип файла. <a href="?">Попробовать другой файл?</a>');
-
-        @copy($_FILES['picture']['tmp_name'], $path . $_FILES['picture']['name']);
-        $imagePath = $path . $_FILES['picture']['name'];
-
-        if ($data != '')
-            unlink($data);
+    if ($_FILES['picture']['error'] != UPLOAD_ERR_OK) {
+        $_SESSION['error'] ='Ошибка загрузки файла: ' . $_FILES['picture']['error'];
+        header("Location: {$_SERVER['HTTP_REFERER']}");
+        exit;
     }
+
+    if (!in_array($_FILES['picture']['type'], $types)) {
+        $_SESSION['error'] ='Запрещённый тип файла. Допустимые типы файлов: ' . implode(", ", $types);
+        header("Location: {$_SERVER['HTTP_REFERER']}");
+        exit;
+    }
+
+// Генерация уникального имени файла
+    $file_ext = strtolower(pathinfo($_FILES["picture"]["name"], PATHINFO_EXTENSION));
+    $file_name = uniqid() . "_" . time() . "." . $file_ext;
+
+    if (!move_uploaded_file($_FILES['picture']['tmp_name'], $path . $file_name)) {
+        $_SESSION['error'] ='Ошибка сохранения файла.';
+        header("Location: {$_SERVER['HTTP_REFERER']}");
+        exit;
+    }
+
+    $imagePath = $path . $file_name;
+
+    deleteImageFromServer($question_id);
+
     return $imagePath;
 }
 
-function deleteImage($ques_id)
+function deleteImageFromServer($question_id)
 {
     global $conn;
-    $sql = "SELECT image FROM questions WHERE id='".$ques_id."'";
-    $result = $conn->query($sql);
+    $sql = "SELECT image FROM questions WHERE id=" . $question_id;
+    $result = $conn -> query($sql);
     $imagePath = '';
-
     while ($row = $result->fetch_assoc()) {
         $imagePath = $row['image'];
     }
@@ -97,4 +114,3 @@ function deleteImage($ques_id)
         unlink($imagePath);
     }
 }
-?>

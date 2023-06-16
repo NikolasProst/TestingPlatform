@@ -155,14 +155,12 @@ function answer($data)
     $array = array();
     $array['correct_answers'] = array();
     $array['incorrect_answers'] = array();
-
     $test_id = $data['test_id'];
     $freeAnswer = $data['freeAnswer'];
     $right = 0;
     $wrong = 0;
     $no_answer = 0;
-
-    $sql = "SELECT * FROM questions WHERE id_test in(" . $data['ids'] . ")";
+    $sql = "SELECT * FROM questions WHERE id in(" . $data['question_ids'] . ")";
     $result = $conn->query($sql);
     while ($question = $result->fetch_assoc()) {
         $selectAnswerIds = array();
@@ -282,7 +280,7 @@ function showQuestions()
 
             if ($rowQuestion['image'] != null)
             {
-                $html .= '<img src="'. $rowQuestion['image'] .'" class="img-thumbnail">';
+                $html .= '<img src="'. $_SERVER['DOCUMENT_ROOT']. $rowQuestion['image'] .'" class="img-thumbnail">';
             }
 
             if ($rowQuestion['type'] == 1)
@@ -361,6 +359,7 @@ function enableSingleQuestion()
     $sql = "SELECT * FROM questions WHERE id_test in(" . $ids . ") AND type = 0 ORDER BY RAND() LIMIT " . $countQuestion;
     $sqlFree = "SELECT * FROM questions WHERE id_test in(" . $ids . ") AND type = 1 ORDER BY RAND() LIMIT " . $countFreeQuestion;
 
+    $question_ids = array();
     $resultFree = $conn->query($sqlFree);
     $resultTest = $conn->query($sql);
 
@@ -384,6 +383,8 @@ function enableSingleQuestion()
         foreach ($result as $question)
         {
             $html .= '<div class="tab "><h4>Вопрос ' . $i . ' из ' . $count . ':</h4><p>' . $question['text'] . '</p>';
+
+            $question_ids[] = $question['id'];
 
             if ($question['image'] != '') {
                 $html .= '<img src="admin/' . $question['image'] . '" class="img-thumbnail">';
@@ -434,12 +435,13 @@ function enableSingleQuestion()
                     }
                 }
             }
-
             $html .= '</div>';
             $i++;
         }
         echo $html .= '<input type="hidden" name="trainingMode" value="' . $trainingMode . '">
         <input type="hidden" name="ids" value="' . $ids . '" />
+        <input type="hidden" name="question_ids" value="' . implode(',', $question_ids) . '" />
+        <input type="hidden" name="countQuest" value="' . $count . '" />
         <button type="button" id="nextBtn" onclick="nextPrev(1)">Следующий вопрос</button>
         <button type="button" style="float: right; background-color: orangered" id="finishBtn" onclick="finishTest()">Досрочно завершить тест</button></div>
         </form></div>';

@@ -22,6 +22,21 @@ $test_id = $_GET['test_id'];
 		<br/><br/>
 		<div class="content-box"><!-- Start Content Box -->
 			<div class="content-box-content">
+                <?php if(isset($_SESSION['error'])) : ?>
+                    <span id="message">
+                                <div class="alert alert-danger">
+                                    <?php echo $_SESSION['error']; unset($_SESSION['error']);  ?>
+                                </div>
+                            </span>
+                <?php endif; ?>
+
+                <?php if(isset($_SESSION['success'])) : ?>
+                    <span id="message">
+                                <div class="alert alert-success">
+                                    <?php echo $_SESSION['success']; unset($_SESSION['success']); ?>
+                                </div>
+                            </span>
+                <?php endif; ?>
                 <?php
                     showQuestions();
                 ?>

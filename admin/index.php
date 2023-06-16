@@ -51,7 +51,7 @@
 
                         <div class="form-group">
                             <label for="specialization">Направление:</label>
-                            <select name="specialization" id="specialization" class="form-control">
+                            <select name="specialization" id="specialization" class="form-control" style="max-width: 200px">
                                 <option value="">Все</option>
                                 <?php
                                 $sql = "SELECT DISTINCT sp.name FROM tests t LEFT JOIN specializations sp ON t.id_specialization = sp.id";
@@ -66,7 +66,7 @@
 
                         <div class="form-group">
                             <label for="subject">Предмет:</label>
-                            <select name="subject" id="subject" class="form-control">
+                            <select name="subject" id="subject" class="form-control" style="max-width: 200px">
                                 <option value="">Все</option>
                                 <?php
                                 $sql = "SELECT DISTINCT s.name FROM tests t LEFT JOIN subjects s ON t.id_competence = s.id";
@@ -81,7 +81,7 @@
 
                         <div class="form-group">
                             <label for="competence">Компетенция:</label>
-                            <select name="competence" id="competence" class="form-control">
+                            <select name="competence" id="competence" class="form-control" style="max-width: 200px">
                                 <option value="">Все</option>
                                 <?php
                                 $sql = "SELECT DISTINCT c.name FROM tests t LEFT JOIN competences c ON t.id_competence = c.id";
@@ -161,7 +161,7 @@
                                 <td style="min-width:140px;">
                                     <a class="edit" href="viewTest.php?test_id=<?php echo $row['id'];  ?>" data-toggle="tooltip" title="Просмотр теста"><i class="fa fa-eye"></i></a>
                                     <a class="add" href="addQuestion.php?test_id=<?php echo $row['id']; ?>" data-toggle="tooltip" title="Добавить вопрос"><i class="fa fa-plus"></i></a>
-                                    <a class="delete" href="deleteTab.php?action=removeTest&test_id=<?php echo $row['id']; ?>" data-toggle="tooltip" title="Удалить тест"><i class="fa fa-trash"></i></a>
+                                    <a style="float: right" class="delete" onclick="confirmDelete(<?php echo $row['id']; ?>)" data-toggle="tooltip" title="Удалить тест"><i class="fa fa-trash"></i></a>
                                 </td>
                                 </tr><?php
                                 $id_test++;
@@ -184,6 +184,11 @@
             document.getElementById('enable_disable').submit();
         }
     });});
+    function confirmDelete(testId) {
+        if (confirm("Вы уверены, что хотите удалить этот тест?")) {
+            window.location.href = "deleteTab.php?action=removeTest&test_id=" + testId;
+        }
+    }
 </script>
 
 <?php include('footer.php'); ?>
