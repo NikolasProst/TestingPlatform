@@ -3,11 +3,6 @@ $title = "Tests List";
 
 include('config.php');
 include('functions.php');
-//check session variable is set
-//if (!isset($_SESSION['userdata']['user_email'])) {
-//    header('location: index.php');
-//}
-//$user_id = $_SESSION['userdata']['user_id'];
 
 if (isset($_POST['startTest'])) {
     $specialization = $_POST['specialization'];

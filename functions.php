@@ -13,14 +13,14 @@ function loginUser($email, $pass, $checked) {
             //if (password_verify($hash, $row['password'])) {
             if ($pass === $row['password']) {
                 if (!empty($checked)) {
-                    setcookie("useremail", $email, time()+ (10 * 365 * 24 * 60 * 60));  
+                    setcookie("useremail", $email, time()+ (10 * 365 * 24 * 60 * 60));
                     setcookie("password", $pass, time()+ (10 * 365 * 24 * 60 * 60));
                 }
                 $_SESSION['userdata'] = array('user_email'=>$row['email'],'user_id'=>$row['user_id']);
                 header('Location: index.php');
             } else {
                 $errors[] = array('input'=>'form', 'msg'=>'Invalid password');
-            }   
+            }
         } else {
             $errors[] = array('input'=>'form', 'msg'=>'Wrong Email Address');
             return $errors;
@@ -44,14 +44,14 @@ function loginAdmin($email, $pass, $checked) {
             //if (password_verify($hash, $row['password'])) {
             if ($pass === $row['password']) {
                 if (!empty($checked)) {
-                    setcookie("admin_email", $email, time()+ (10 * 365 * 24 * 60 * 60));  
+                    setcookie("admin_email", $email, time()+ (10 * 365 * 24 * 60 * 60));
                     setcookie("admin_password", $pass, time()+ (10 * 365 * 24 * 60 * 60));
                 }
                 $_SESSION['admindata'] = array('admin_email'=>$row['email'],'admin_id'=>$row['admin_id']);
                 header('Location: index.php');
             } else {
                 $errors[] = array('input'=>'form', 'msg'=>'Invalid password');
-            }   
+            }
         } else {
             $errors[] = array('input'=>'form', 'msg'=>'Wrong Email Address');
             return $errors;
@@ -76,7 +76,7 @@ function checkUser($email) {
             }
         }
         return $_SESSION['error'];
-    } 
+    }
     return false;
 }
 
@@ -131,6 +131,13 @@ function addQuestion($testId, $question, $options, $writeOptions, $answer_for_fr
 function getLastIdQuestion() {
     global $conn;
     $sql = 'SELECT MAX(id) id FROM questions';
+    $result = $conn ->query($sql) ->fetch_array();
+    return $result['id'];
+}
+
+function getLastIdTest() {
+    global $conn;
+    $sql = 'SELECT MAX(id) id FROM tests';
     $result = $conn ->query($sql) ->fetch_array();
     return $result['id'];
 }
@@ -280,7 +287,7 @@ function showQuestions()
 
             if ($rowQuestion['image'] != null)
             {
-                $html .= '<img src="'. $_SERVER['DOCUMENT_ROOT']. $rowQuestion['image'] .'" class="img-thumbnail">';
+                $html .= '<img src="'. $rowQuestion['image'] .'" class="img-thumbnail">';
             }
 
             if ($rowQuestion['type'] == 1)
@@ -331,16 +338,16 @@ function showExamQuestions() {
         while ($row = $result->fetch_assoc()) {
             $html .= '<p>'.$i.') '.$row['text'].'</p>';
             if(isset($row['option1'])) {
-            $html .= '<div class="radio"><label><input type="radio" name="'.$row['ques_id'].'" value="0">'.$row['option1'].'</label></div>';
+                $html .= '<div class="radio"><label><input type="radio" name="'.$row['ques_id'].'" value="0">'.$row['option1'].'</label></div>';
             }
             if(isset($row['option2'])) {
-            $html .= '<div class="radio"><label><input type="radio" name="'.$row['ques_id'].'" value="1">'.$row['option2'].'</label></div>';
+                $html .= '<div class="radio"><label><input type="radio" name="'.$row['ques_id'].'" value="1">'.$row['option2'].'</label></div>';
             }
             if(isset($row['option3'])) {
-            $html .= '<div class="radio"><label><input type="radio" name="'.$row['ques_id'].'" value="2">'.$row['option3'].'</label></div>';
+                $html .= '<div class="radio"><label><input type="radio" name="'.$row['ques_id'].'" value="2">'.$row['option3'].'</label></div>';
             }
             if(isset($row['option4'])) {
-            $html .= '<div class="radio"><label><input type="radio" name="'.$row['ques_id'].'" value="3">'.$row['option4'].'</label></div>';
+                $html .= '<div class="radio"><label><input type="radio" name="'.$row['ques_id'].'" value="3">'.$row['option4'].'</label></div>';
             }
             $html .= '<div class="radio" style="display:none" ><label><input type="radio" checked="checked" name="'.$row['ques_id'].'" value="no_attempt"></label></div>';
             $i++;
@@ -461,6 +468,27 @@ function showSpec()
         $id = $row['id'];
         $name = $row['name'];
         echo "<option value='$id'>$name</option>";
+    }
+}
+
+function showSpecWithSelected($selectedSpecId)
+{
+    global $conn;
+
+    $sql = "SELECT * FROM specializations";
+    $result = $conn->query($sql);
+
+    while ($row = mysqli_fetch_assoc($result))
+    {
+        $id = $row['id'];
+        $name = $row['name'];
+
+        if ($selectedSpecId == $id) {
+            echo "<option value='$id' selected>$name</option>";
+        }
+        else {
+            echo "<option value='$id'>$name</option>";
+        }
     }
 }
 

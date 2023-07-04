@@ -72,6 +72,7 @@
                                             <?php $id_subj++;?>
                                         <td style="min-width:140px;">
                                             <a class="delete" href="deleteTab.php?action=removeSubj&subj_id=<?php echo $row['id']; ?>" data-toggle="tooltip" title="Удалить предмет"><i class="fa fa-trash"></i></a>
+                                            <a href="editSubj.php?subj_id=<?php echo $row['id']; ?>" data-toggle="tooltip" title="Редактировать предмет"><i class="fa fa-edit"></i></a>
                                         </td>
                                         </tr>
                                         <?php

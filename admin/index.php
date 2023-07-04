@@ -26,11 +26,6 @@
             <div class="table-responsive">
                 <div class="table-wrapper">
                     <div class="table-title">
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <a href="addTest.php" class="btn btn-info add-new"><i class="fa fa-plus"></i> Добавить тест</a>
-                            </div>
-                        </div>
                         <?php if(isset($_SESSION['error'])) : ?>
                             <span id="message">
                                 <div class="alert alert-danger">
@@ -47,57 +42,67 @@
                             </span>
                         <?php endif; ?>
                     </div>
-                    <form method="POST" class="form-inline" style="margin-bottom: 20px;">
+                    <div class="row">
 
-                        <div class="form-group">
-                            <label for="specialization">Направление:</label>
-                            <select name="specialization" id="specialization" class="form-control" style="max-width: 200px">
-                                <option value="">Все</option>
-                                <?php
-                                $sql = "SELECT DISTINCT sp.name FROM tests t LEFT JOIN specializations sp ON t.id_specialization = sp.id";
-                                $result = $conn->query($sql);
-                                while($row = $result->fetch_assoc()) {
-                                    if ($row['name'] != null)
-                                        echo "<option value='" . $row['name'] . "'>" . $row['name'] . "</option>";
-                                }
-                                ?>
-                            </select>
+                        <div class="col-md-10">
+                            <form method="POST" class="form-inline" style="margin-bottom: 20px;">
+
+                                <div class="form-group">
+                                    <label for="specialization">Направление:</label>
+                                    <select name="specialization" id="specialization" class="form-control" style="max-width: 200px">
+                                        <option value="">Все</option>
+                                        <?php
+                                        $sql = "SELECT DISTINCT sp.name FROM tests t LEFT JOIN specializations sp ON t.id_specialization = sp.id";
+                                        $result = $conn->query($sql);
+                                        while($row = $result->fetch_assoc()) {
+                                            if ($row['name'] != null)
+                                                echo "<option value='" . $row['name'] . "'>" . $row['name'] . "</option>";
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="subject">Предмет:</label>
+                                    <select name="subject" id="subject" class="form-control" style="max-width: 200px">
+                                        <option value="">Все</option>
+                                        <?php
+                                        $sql = "SELECT DISTINCT s.name FROM tests t LEFT JOIN subjects s ON t.id_competence = s.id";
+                                        $result = $conn->query($sql);
+                                        while($row = $result->fetch_assoc()) {
+                                            if ($row['name'] != null)
+                                                echo "<option value='" . $row['name'] . "'>" . $row['name'] . "</option>";
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="competence">Компетенция:</label>
+                                    <select name="competence" id="competence" class="form-control" style="max-width: 200px">
+                                        <option value="">Все</option>
+                                        <?php
+                                        $sql = "SELECT DISTINCT c.name FROM tests t LEFT JOIN competences c ON t.id_competence = c.id";
+                                        $result = $conn->query($sql);
+                                        while($row = $result->fetch_assoc()) {
+                                            if ($row['name'] != null)
+                                                echo "<option value='" . $row['name'] . "'>" . $row['name'] . "</option>";
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary">Фильтр</button>
+                                <a href="index.php" class="btn btn-secondary">Сбросить</a>
+
+                            </form>
                         </div>
 
-                        <div class="form-group">
-                            <label for="subject">Предмет:</label>
-                            <select name="subject" id="subject" class="form-control" style="max-width: 200px">
-                                <option value="">Все</option>
-                                <?php
-                                $sql = "SELECT DISTINCT s.name FROM tests t LEFT JOIN subjects s ON t.id_competence = s.id";
-                                $result = $conn->query($sql);
-                                while($row = $result->fetch_assoc()) {
-                                    if ($row['name'] != null)
-                                        echo "<option value='" . $row['name'] . "'>" . $row['name'] . "</option>";
-                                }
-                                ?>
-                            </select>
+                        <div class="col-md-2">
+                            <a href="addTest.php" class="btn btn-info add-new"><i class="fa fa-plus"></i> Добавить тест</a>
                         </div>
 
-                        <div class="form-group">
-                            <label for="competence">Компетенция:</label>
-                            <select name="competence" id="competence" class="form-control" style="max-width: 200px">
-                                <option value="">Все</option>
-                                <?php
-                                $sql = "SELECT DISTINCT c.name FROM tests t LEFT JOIN competences c ON t.id_competence = c.id";
-                                $result = $conn->query($sql);
-                                while($row = $result->fetch_assoc()) {
-                                    if ($row['name'] != null)
-                                        echo "<option value='" . $row['name'] . "'>" . $row['name'] . "</option>";
-                                }
-                                ?>
-                            </select>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary">Фильтр</button>
-                        <a href="index.php" class="btn btn-secondary">Сбросить</a>
-
-                    </form>
+                    </div>
 
                     <table class="table table-bordered">
                         <thead>
@@ -161,6 +166,7 @@
                                 <td style="min-width:140px;">
                                     <a class="edit" href="viewTest.php?test_id=<?php echo $row['id'];  ?>" data-toggle="tooltip" title="Просмотр теста"><i class="fa fa-eye"></i></a>
                                     <a class="add" href="addQuestion.php?test_id=<?php echo $row['id']; ?>" data-toggle="tooltip" title="Добавить вопрос"><i class="fa fa-plus"></i></a>
+                                    <a class="copy" href="copyTest.php?test_id=<?php echo $row['id']; ?>" data-toggle="tooltip" title="Копировать тест"><i class="fa fa-copy"></i></a>
                                     <a style="float: right" class="delete" onclick="confirmDelete(<?php echo $row['id']; ?>)" data-toggle="tooltip" title="Удалить тест"><i class="fa fa-trash"></i></a>
                                 </td>
                                 </tr><?php

@@ -3,6 +3,6 @@
 	<script src="js/bootstrap.min.js"></script>
 	<script src="js/bootstrap-datepicker.js"></script>
 	<script src="js/custom.js"></script>
-	<script src="js/site_script_1.0.js"></script>
+	<script src="js/site_script_1.1.js"></script>
 </body>
 </html>

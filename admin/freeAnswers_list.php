@@ -46,6 +46,11 @@
                 <button type="submit" class="btn btn-primary">Фильтр</button>
                 <a href="freeAnswers_list.php" class="btn btn-secondary">Сбросить</a>
             </form>
+            <div class="row" style="padding-top: 15px">
+                <div class="col-sm-12">
+                    <button id="export-csv-btn" class="btn btn-success">Сделать выгрузку</button>
+                </div>
+            </div>
             <form action="saveFreeAnswers.php" method="post">
             <div class="table-responsive">
                 <div class="table-wrapper">
@@ -117,11 +122,6 @@
                 </div>
             </div>
             </form>
-            <div class="row">
-                <div class="col-sm-12">
-                    <button id="export-csv-btn" class="btn btn-success">Сделать выгрузку</button>
-                </div>
-            </div>
         </div> <!-- End .content-box-content -->
     </div> <!-- End .content-box -->
 </div>	<!--/.main-->
