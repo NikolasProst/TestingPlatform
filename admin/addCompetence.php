@@ -27,7 +27,7 @@
 		<div class="row">
 			<ol class="breadcrumb">
                 <li><a href="index.php"><em class="fa fa-home"></em></a></li>
-                <li><a href="subj_list.php">Компетенции</a></li>
+                <li><a href="comp_list.php">Компетенции</a></li>
                 <li>Создать компетенцию</li>
             </ol>
 		</div><!--/.row-->
@@ -42,7 +42,7 @@
 					<?php if(isset($_SESSION['error'])) : ?>
                     <span id="message">
                         <div class="alert alert-danger">
-                            <?php echo $_SESSION['error']; unset($_SESSION['error']);  ?>
+                            <?php echo $_SESSION['error'][0]; unset($_SESSION['error']);  ?>
                         </div> 
 					</span>
 

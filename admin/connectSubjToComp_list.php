@@ -34,7 +34,7 @@
                         <?php if(isset($_SESSION['error'])) : ?>
                             <span id="message">
                                 <div class="alert alert-danger">
-                                    <?php echo $_SESSION['error']; unset($_SESSION['error']);  ?>
+                                    <?php echo $_SESSION['error'][0]; unset($_SESSION['error']);  ?>
                                 </div>
                             </span>
                         <?php endif; ?>
@@ -59,7 +59,9 @@
 
                         <tbody>
                             <?php
-                                $sql = "select s.id subj_id, s.name subj_name, c.id comp_id, c.name comp_name from subjects s left join subjects_to_competence stc on s.id = stc.id_subject left join  competences c on stc.id_competence = c.id order by s.name";
+                                $sql = "select s.id subj_id, s.name subj_name, c.id comp_id, c.name comp_name from subjects s 
+                                            left join subjects_to_competence stc on s.id = stc.id_subject 
+                                                left join  competences c on stc.id_competence = c.id order by s.name";
                                 $result = $conn->query($sql);
                                 $id = 1;
 
@@ -75,6 +77,7 @@
                                             <?php $id++;?>
                                         <td style="min-width:140px;">
                                             <a class="delete" href="deleteTab.php?action=removeConStc&subj_id=<?php echo $row['subj_id']; ?>&comp_id=<?php echo $row['comp_id'];?>" data-toggle="tooltip" title="Удалить направление"><i class="fa fa-trash"></i></a>
+                                            <a href="editConnectSubjToComp.php?subj_id=<?php echo $row['subj_id'];?>&comp_id=<?php echo $row['comp_id']; ?>" data-toggle="tooltip" title="Редактировать связь"><i class="fa fa-edit"></i></a>
                                         </td>
                                             <?}?>
                                         </tr>

@@ -522,4 +522,60 @@ function showCompetence()
     }
 }
 
+function showSubjectBy($subjId)
+{
+    global $conn;
+    $sql = "SELECT * FROM subjects";
+    $result = $conn->query($sql);
+
+    while ($row = mysqli_fetch_assoc($result))
+    {
+        $id = $row['id'];
+        $name = $row['name'];
+        if ($row['id'] == $subjId) {
+            echo "<option value='$id' selected>$name</option>";
+            continue;
+        }
+        echo "<option value='$id'>$name</option>";
+    }
+}
+
+function showCompetenceBy($compId)
+{
+    global $conn;
+
+    $sql = "SELECT * FROM competences";
+    $result = $conn->query($sql);
+
+    while ($row = mysqli_fetch_assoc($result))
+    {
+        $id = $row['id'];
+        $name = $row['name'];
+        if ($row['id'] == $compId) {
+            echo "<option value='$id' selected >$name</option>";
+            continue;
+        }
+        echo "<option value='$id'>$name</option>";
+    }
+}
+
+function showSpecBy($specId)
+{
+    global $conn;
+
+    $sql = "SELECT * FROM specializations";
+    $result = $conn->query($sql);
+
+    while ($row = mysqli_fetch_assoc($result))
+    {
+        $id = $row['id'];
+        $name = $row['name'];
+        if ($row['id'] == $specId) {
+            echo "<option value='$id' selected >$name</option>";
+            continue;
+        }
+        echo "<option value='$id'>$name</option>";
+    }
+}
+
 ?>

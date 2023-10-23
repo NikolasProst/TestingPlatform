@@ -28,7 +28,7 @@
 					<?php if(isset($_SESSION['error'])) : ?>
                     <span id="message">
                         <div class="alert alert-danger">
-                            <?php echo $_SESSION['error']; unset($_SESSION['error']);  ?>
+                            <?php echo $_SESSION['error'][0]; unset($_SESSION['error']);  ?>
                         </div> 
 					</span>
 					<?php endif; ?> 

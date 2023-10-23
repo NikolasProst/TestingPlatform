@@ -34,7 +34,7 @@
                         <?php if(isset($_SESSION['error'])) : ?>
                             <span id="message">
                                 <div class="alert alert-danger">
-                                    <?php echo $_SESSION['error']; unset($_SESSION['error']);  ?>
+                                    <?php echo $_SESSION['error'][0]; unset($_SESSION['error']);  ?>
                                 </div>
                             </span>
                         <?php endif; ?>
@@ -75,6 +75,7 @@
                                             <?php $id++;?>
                                         <td style="min-width:140px;">
                                             <a class="delete" href="deleteTab.php?action=removeConSts&spec_id=<?php echo $row['spec_id']; ?>&subj_id=<?php echo $row['subj_id']; ?>" data-toggle="tooltip" title="Удалить направление"><i class="fa fa-trash"></i></a>
+                                            <a href="editConnectSpecToSubj.php?subj_id=<?php echo $row['subj_id'];?>&spec_id=<?php echo $row['spec_id']; ?>" data-toggle="tooltip" title="Редактировать связь"><i class="fa fa-edit"></i></a>
                                         </td>
                                             <?}?>
                                         </tr>
